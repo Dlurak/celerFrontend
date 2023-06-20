@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 1024 1024" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs/>
+<g id="Ebene-1">
+<path d="M320 256C320 149.961 405.961 64 512 64C618.039 64 704 149.961 704 256C704 362.039 618.039 448 512 448C405.961 448 320 362.039 320 256Z" fill="#000102" fill-rule="nonzero" opacity="1" stroke="none"/>
+<path d="M512 512C229.23 512 0 741.23 0 1024L128 1024C128 811.923 299.923 640 512 640C724.077 640 896 811.923 896 1024L1024 1024C1024 741.23 794.77 512 512 512Z" fill="#000102" fill-rule="nonzero" opacity="1" stroke="none"/>
+</g>
+</svg>
