@@ -42,10 +42,15 @@
 
         switch (response.status) {
             case 200:
-                responseTextUser = 'You are now logged in';
+                responseTextUser = `Welcome back ${responseJson.username}! You will be redirected shortly.`;
+                document.cookie = `sessionCookie=${responseJson.sessionID}; expires=${responseJson.expires}; path=/;`;
+                
+                await new Promise(r => setTimeout(r, 2000));
+
+                window.location.href = `/user/${responseJson.username}`;
                 break;
             case 401:
-                responseTextUser = 'Incorrect password or username';
+                responseTextUser = 'Incorrect password or username ヽ(ಠ_ಠ)ノ';
                 break;
             default:
                 responseTextUser = 'Something went wrong (╯°□°）╯彡┻━┻';
