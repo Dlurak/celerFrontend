@@ -1,6 +1,13 @@
 <script>
     import Navbar from "../../components/Navbar.svelte";
 
+    let isButtonDisabled = true;
+    let passwordValue = '';
+    let usernameValue = '';
+    let buttonHint = 'Please fill in all fields';
+
+    $: isButtonDisabled = !(passwordValue && usernameValue); // disable button if any of the fields are empty
+    $: buttonHint = isButtonDisabled ? 'Please fill in all fields' : 'Login'; // change button hint depending on whether the button is disabled or not
 </script>
 
 
@@ -10,16 +17,16 @@
         <h3>Login now</h3>      
     
         <span>
-            <input type="text" id="username" name="username" placeholder=" "/>
+            <input type="text" id="username" name="username" placeholder=" " bind:value={usernameValue}/>
             <label for="username">Username</label>
         </span>
 
         <span>
-            <input type="password" id="password" name="password" placeholder=" "/>
+            <input type="password" id="password" name="password" placeholder=" " bind:value={passwordValue}/>
             <label for="password">Password</label>
         </span>
     
-        <button>Login</button>
+        <button disabled={isButtonDisabled} title={buttonHint}>Login</button>
 
         <p>
             Don't have an account? <a href="/register">Register</a>
@@ -142,17 +149,22 @@
 
         transition: all var(--animation);
     }
-    #login > button:hover,
-    #login > button:focus {
+    #login > button:not(:disabled):hover,
+    #login > button:not(:disabled):focus {
         cursor: pointer;
         transform: scale(1.05);
         box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.6);
         outline: none;
     }
-    #login > button:active {
+    #login > button:not(:disabled):active {
         cursor: grabbing;
         transform: scale(1);
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
+    }
+
+    #login > button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 
     a {
