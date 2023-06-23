@@ -65,12 +65,12 @@
         <h3>Login now</h3>
         <p>{responseTextUser}</p>
         <span>
-            <input type="text" id="username" name="username" placeholder=" " bind:value={usernameValue} />
+            <input type="text" id="username" name="username" placeholder=" " bind:value={usernameValue} autocomplete="username"/>
             <label for="username">Username</label>
         </span>
 
         <span>
-            <input type="password" id="password" name="password" placeholder=" " bind:value={passwordValue} />
+            <input type="password" id="password" name="password" placeholder=" " bind:value={passwordValue} autocomplete="current-password"/>
             <label for="password">Password</label>
         </span>
 
@@ -174,6 +174,12 @@
     #login > span > input:not(:placeholder-shown) + label {
         font-size: 15px;
         top: -20px;
+    }
+
+    /* autofilled inputs */
+    #login > span > input:-webkit-autofill {
+        transition: background-color 5000s ease-in-out 0s;
+        -webkit-text-fill-color: var(--text-color);
     }
 
     #login > button {
