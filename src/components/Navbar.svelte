@@ -50,12 +50,16 @@
         :global(html) {
             --navbar-background-color: #75756A;
             --text-color: white;
+            --submit-button-background-color: darkgreen;
+            --link-color: #0C88F7;
         }
     }
     @media only screen and (prefers-color-scheme: light) {
         :global(html) {
             --navbar-background-color: beige;
             --text-color: black;
+            --submit-button-background-color: green;
+            --link-color: #0000EE;
         }
     }
     :global(html) {
