@@ -20,6 +20,10 @@
         </span>
     
         <button>Login</button>
+
+        <p>
+            Don't have an account? <a href="/register">Register</a>
+        </p>
     </div>
 </main>
 
@@ -149,5 +153,13 @@
         cursor: grabbing;
         transform: scale(1);
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
+    }
+
+    a {
+        color: var(--link-color);
+    }
+    p {
+        margin-top: 20px;
+        color: var(--text-color);
     }
 </style>
