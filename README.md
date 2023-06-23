@@ -17,4 +17,4 @@ This is the official repository for the Celer frontend written with SvelteKit.
     ```bash
     npm run dev
     ```
-4. Navigate to [localhost:3000](http://localhost:3000)
+4. Navigate to [localhost:5173](http://localhost:5173)
