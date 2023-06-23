@@ -1,32 +1,75 @@
 <script>
     import Navbar from "../../components/Navbar.svelte";
+    import { json } from "@sveltejs/kit";
 
     let isButtonDisabled = true;
-    let passwordValue = '';
-    let usernameValue = '';
-    let buttonHint = 'Please fill in all fields';
+    let passwordValue = "";
+    let usernameValue = "";
+    let buttonHint = "Please fill in all fields";
+
+    let responseTextUser = '';
 
     $: isButtonDisabled = !(passwordValue && usernameValue); // disable button if any of the fields are empty
-    $: buttonHint = isButtonDisabled ? 'Please fill in all fields' : 'Login'; // change button hint depending on whether the button is disabled or not
-</script>
+    $: buttonHint = isButtonDisabled ? "Please fill in all fields" : "Login"; // change button hint depending on whether the button is disabled or not
 
+    async function login() {
+        const configResponse = await fetch("config.json", {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        });
+        const config = await configResponse.json();
+
+        const url = config.apiUrl + "/login";
+        const body = {
+            username: usernameValue,
+            password: passwordValue,
+        };
+
+        console.log(body);
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify(body)
+        });
+
+        const responseJson = await response.json();
+
+        switch (response.status) {
+            case 200:
+                responseTextUser = 'You are now logged in';
+                break;
+            case 401:
+                responseTextUser = 'Incorrect password or username';
+                break;
+            default:
+                responseTextUser = 'Something went wrong (╯°□°）╯彡┻━┻';
+                break;
+        }
+    }
+</script>
 
 <Navbar />
 <main>
     <div id="login">
-        <h3>Login now</h3>      
-    
+        <h3>Login now</h3>
+        <p>{responseTextUser}</p>
         <span>
-            <input type="text" id="username" name="username" placeholder=" " bind:value={usernameValue}/>
+            <input type="text" id="username" name="username" placeholder=" " bind:value={usernameValue} />
             <label for="username">Username</label>
         </span>
 
         <span>
-            <input type="password" id="password" name="password" placeholder=" " bind:value={passwordValue}/>
+            <input type="password" id="password" name="password" placeholder=" " bind:value={passwordValue} />
             <label for="password">Password</label>
         </span>
-    
-        <button disabled={isButtonDisabled} title={buttonHint}>Login</button>
+
+        <button disabled={isButtonDisabled} title={buttonHint} on:click={login}>Login</button>
 
         <p>
             Don't have an account? <a href="/register">Register</a>
@@ -117,7 +160,7 @@
 
         transition: all var(--animation);
 
-        -webkit-user-select: none; /* Safari */        
+        -webkit-user-select: none; /* Safari */
         -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* IE10+/Edge */
         user-select: none; /* Standard */
@@ -127,17 +170,17 @@
         font-size: 15px;
         top: -20px;
     }
-    
+
     #login > button {
         width: 100%;
         background-color: var(--submit-button-background-color);
         color: var(--text-color);
-        
+
         padding-left: 20px;
         padding-right: 20px;
         padding-top: 10px;
         padding-bottom: 10px;
-        
+
         border-radius: 10px;
         border: none;
 
@@ -173,5 +216,9 @@
     p {
         margin-top: 20px;
         color: var(--text-color);
+    }
+
+    p:empty {
+        display: none;
     }
 </style>
