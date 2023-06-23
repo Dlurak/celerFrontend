@@ -50,12 +50,14 @@
         :global(html) {
             --navbar-background-color: #75756A;
             --text-color: white;
+            --submit-button-background-color: darkgreen;
         }
     }
     @media only screen and (prefers-color-scheme: light) {
         :global(html) {
             --navbar-background-color: beige;
             --text-color: black;
+            --submit-button-background-color: green;
         }
     }
     :global(html) {
