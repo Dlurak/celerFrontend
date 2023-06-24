@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import Navbar from "../../components/Navbar.svelte";
     import LoginInput from "../../components/loginInput.svelte";
+    import SubmitButton from "../../components/submitButton.svelte";
 
     let isButtonDisabled = true;
     let passwordValue = "";
@@ -74,7 +75,10 @@
         <LoginInput type="text" bind:value={usernameValue}/>
         <LoginInput type="password" bind:value={passwordValue}/>
 
-        <button disabled={isButtonDisabled} title={buttonHint} on:click={login}>Login</button>
+        <SubmitButton disabled={isButtonDisabled} title={buttonHint} onClick={login}>
+            Login
+        </SubmitButton>
+
 
         <p>
             Don't have an account? <a href="/register">Register</a>
