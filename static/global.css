@@ -44,3 +44,7 @@ body {
         --link-color: #0000ee;
     }
 }
+
+body {
+    color: var(--text-color);
+}
