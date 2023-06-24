@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
 
     export let type: "password" | "text";
+    export let onInput: (e: Event) => void = () => {};
     export let newPassword = false;
     export let value = "";
 
@@ -17,16 +18,13 @@
         inputField.type = showPassword ? "text" : "password";
     }
 
-    let passwordIcon: HTMLElement;
-    $: console.log(passwordIcon)
-
     onMount(() => {
         inputField.type = type;
     });
 </script>
 
 <span>
-    <input name={name} placeholder=" " bind:this={inputField} bind:value={value} autocomplete={autocomplete}>
+    <input name={name} placeholder=" " bind:this={inputField} bind:value={value} autocomplete={autocomplete} on:input={onInput}>
     <label for={name}>{name}</label>
     {#if type==='password'}
         <button
