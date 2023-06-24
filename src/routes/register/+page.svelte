@@ -3,6 +3,7 @@
     import Navbar from "../../components/Navbar.svelte";
     import LoginInput from "../../components/loginInput.svelte";
     import SubmitButton from "../../components/submitButton.svelte";
+    import { each } from "svelte/internal";
 
     const passwordStrengthColors = ['red', 'orangered', 'yellow', 'yellowgreen', 'green', 'lime']
     const validations = [
@@ -12,6 +13,13 @@
         (password: string) => /[0-9]/.test(password), // number
         (password: string) => /[^a-zA-Z0-9]/.test(password) // special character
     ];
+    const validationExplainations = [
+        'must contain at least 12 characters',
+        'must contain at least one lowercase character',
+        'must contain at least one uppercase character',
+        'must contain at least one number',
+        'must contain at least one special character'
+    ]
 
 
     let buttonDisabled = true;
@@ -21,7 +29,10 @@
     let passwordValue = "";
     let passwordRepeatValue = "";
 
-    let passwordStrengthDiv:HTMLDivElement;
+    let isListOpen = false;
+
+    let passwordStrengthSpan:HTMLSpanElement;
+    let strengthList:HTMLUListElement;
 
     $: buttonDisabled = !(usernameValue && passwordValue && passwordRepeatValue && passwordValue === passwordRepeatValue)
 
@@ -36,13 +47,13 @@
     }
 
     $: {
-        if (passwordStrengthDiv) {
+        if (passwordStrengthSpan) {
             colorBoxes();
         }
     }
 
     function colorBoxes() {
-        let fullfilled = Array.from(passwordStrengthDiv.childNodes).filter((element) => (element as HTMLElement).classList.contains("fullfilled"));
+        let fullfilled = Array.from(passwordStrengthSpan.childNodes).filter((element) => (element as HTMLElement).classList.contains("fullfilled"));
         fullfilled.forEach((indicator, index) => {
             let colorLeft = passwordStrengthColors[index];
             let colorRight = passwordStrengthColors[index + 1];
@@ -57,7 +68,7 @@
         const password = (e.target as HTMLInputElement).value;
         const strengthNumber = validations.reduce((count, validation) => count = validation(password) ? count + 1 : count, 0);
 
-        passwordStrengthDiv.childNodes.forEach((indicator, index) => {
+        passwordStrengthSpan.childNodes.forEach((indicator, index) => {
             if (index < strengthNumber) {
                 (indicator as HTMLElement).classList.add("fullfilled");
             } else {
@@ -78,26 +89,45 @@
 <Navbar />
 <main>
     <div id="register">
-        <h3>Register now</h3>
+        <div>
+            <h3>Register now</h3>
 
-        <LoginInput type="text" bind:value={usernameValue} />
-        <LoginInput type="password" newPassword={true} bind:value={passwordValue} onInput={handlePasswordInput}/>
-        <LoginInput type="password" newPassword={true} bind:value={passwordRepeatValue} />
+            <LoginInput type="text" bind:value={usernameValue} />
+            <LoginInput type="password" newPassword={true} bind:value={passwordValue} onInput={handlePasswordInput}/>
+            <LoginInput type="password" newPassword={true} bind:value={passwordRepeatValue} />
 
-        <div id="passwordStrength" bind:this={passwordStrengthDiv}>
-            <!-- length, lowercase, uppercase, number, special character -->
-            {#each Array.from({ length: 5}, (_, i) => i++) as number}
-                <span />
-            {/each}
+            <div id="passwordStrength">
+                <!-- length, lowercase, uppercase, number, special character -->
+                <span bind:this={passwordStrengthSpan}>
+                    {#each Array.from({ length: 5}, (_, i) => i++) as number}
+                        <span />
+                    {/each}
+                </span>
+                <button class="v-shape" class:open={isListOpen} on:click={() => {isListOpen = !isListOpen}}/>
+            </div>
+
+
+            <SubmitButton title={buttonHint} disabled={buttonDisabled} onClick={() => {}}>
+                Register
+            </SubmitButton>
+
+            <p>
+                Already have an account? <a href="/login">Login</a>
+            </p>
         </div>
 
-        <SubmitButton title={buttonHint} disabled={buttonDisabled} onClick={() => {}}>
-            Register
-        </SubmitButton>
-
-        <p>
-            Already have an account? <a href="/login">Login</a>
-        </p>
+        <div>
+            <ul id="strengthList" bind:this={strengthList} class:open={isListOpen}>
+                <!-- <li>At least 12 characters long</li>
+                <li>At least one lower-case charachter</li>
+                <li>At least one upper-case charachter</li>
+                <li>At least one special charachter</li>
+                <li>At least one digit</li> -->
+                {#each validations as validation, index}
+                    <li>{validation(passwordValue) ? '✔️':'❌'} {validationExplainations[index]}</li>
+                {/each}
+            </ul>
+        </div>
     </div>
 </main>
 
@@ -115,9 +145,7 @@
     #register {
         padding: 30px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        flex-direction: row;
 
         background-color: hsla(0, 0%, 0%, 0.2);
 
@@ -125,7 +153,17 @@
 
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     }
-    #register > h3 {
+
+    #register > div:nth-child(1) {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        height: 100%;
+    }
+
+    #register > div:nth-child(1) > h3 {
         margin-top: 0;
     }
 
@@ -143,10 +181,59 @@
 
         margin-top: 20px;
     }
-    #passwordStrength > span {
+    #passwordStrength > span:nth-child(1) {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        width: 90%;
+        height: 30px;
+    }
+    #passwordStrength > span > span {
         display: inline-block;
         width: 15%;
         height: 30px;
         background-color: hsla(0, 0%, 0%, 0.2);
+    }
+
+    .v-shape {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50%;
+        aspect-ratio: 1/1;
+        clip-path: polygon(0 0, 100% 50%, 0 100%);
+    
+        margin: auto;
+
+        background-color: var(--text-color);
+        opacity: var(--secondary-opacity);
+
+        outline: none;
+        border: none;
+
+        transition: all var(--animation);
+        cursor: pointer;
+    }
+    .v-shape:hover {
+        opacity: 1;
+    }
+    .v-shape.open {
+        clip-path: polygon(100% 0, 0 50%, 100% 100%);
+    }
+
+    #strengthList {
+        list-style-type: none;
+
+        padding: 10px 20px;
+
+        display: none;
+    }
+    #strengthList.open {
+        display: flex;
+
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
     }
 </style>

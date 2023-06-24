@@ -61,7 +61,6 @@
 <style> 
     :global(html) {
         --navbar-height: 60px;
-        --secondary-opacity: 0.7;
     }
 
     nav {
