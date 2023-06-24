@@ -140,7 +140,7 @@
         justify-content: center;
         align-items: center;
 
-        height: calc(100vh - var(--navbar-height));
+        min-height: calc(100vh - var(--navbar-height));
     }
     #register {
         padding: 30px;
@@ -235,5 +235,22 @@
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
+    }
+    
+    @media only screen and (max-width: 800px) {
+        #register {
+            flex-direction: column;
+            margin: 30px;
+        }
+        #register > div {
+            width: 100%;
+        }
+
+        .v-shape {
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+        }
+        .v-shape.open {
+            clip-path: polygon(50% 0, 0 100%, 100% 100%);
+        }
     }
 </style>

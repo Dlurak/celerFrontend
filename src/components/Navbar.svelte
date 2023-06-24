@@ -174,6 +174,8 @@
             margin: 0;
             border: 0;
             box-sizing: border-box;
+            
+            z-index: -1;
         }
         nav > ul:nth-child(2) > li {
             width: 100%;
@@ -192,6 +194,11 @@
         nav:not(.open) ul:nth-child(2) > li {
             transform: translateX(-100%);
         }
+        
+        nav.open > ul:nth-child(2) {
+            z-index: 9999;
+        }
+
         nav.open > ul:nth-child(2) > li {
             transform: translateX(0);
         }
