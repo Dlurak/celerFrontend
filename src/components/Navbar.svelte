@@ -21,6 +21,10 @@
     }
 
     const toggleMenu = () => (isMenuOpen = !isMenuOpen);
+
+    onMount(() => {
+        document.title = "Celer";
+    });
 </script>
 
 <nav class:open={isMenuOpen}>

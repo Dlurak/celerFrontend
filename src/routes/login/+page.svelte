@@ -1,6 +1,6 @@
 <script>
+    import { onMount } from "svelte";
     import Navbar from "../../components/Navbar.svelte";
-    import { json } from "@sveltejs/kit";
 
     let isButtonDisabled = true;
     let passwordValue = "";
@@ -57,6 +57,10 @@
                 break;
         }
     }
+
+    onMount(() => {
+        document.title = "Celer - Login";
+    });
 </script>
 
 <Navbar />

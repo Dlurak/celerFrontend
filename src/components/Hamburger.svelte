@@ -3,7 +3,7 @@
     export let toggleMenu: () => void;
 </script>
 
-<button class:open={isOpen} on:click={toggleMenu}>
+<button class:open={isOpen} on:click={toggleMenu} title="Hamburger Menu">
     <span />
     <span />
     <span />
