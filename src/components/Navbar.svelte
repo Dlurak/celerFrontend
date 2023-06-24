@@ -58,33 +58,7 @@
     </ul>
 </nav>
 
-<style>
-    @media only screen and (prefers-reduced-motion: reduce) {
-        :global(html) {
-            --animation: 0s;
-        }
-    }
-    @media only screen and (prefers-reduced-motion: no-preference) {
-        :global(html) {
-            --animation: 0.3s ease-in-out;
-        }
-    }
-    @media only screen and (prefers-color-scheme: dark) {
-        :global(html) {
-            --navbar-background-color: #75756a;
-            --text-color: white;
-            --submit-button-background-color: darkgreen;
-            --link-color: #0c88f7;
-        }
-    }
-    @media only screen and (prefers-color-scheme: light) {
-        :global(html) {
-            --navbar-background-color: beige;
-            --text-color: black;
-            --submit-button-background-color: green;
-            --link-color: #0000ee;
-        }
-    }
+<style> 
     :global(html) {
         --navbar-height: 60px;
         --secondary-opacity: 0.7;
