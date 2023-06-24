@@ -45,7 +45,7 @@
                 responseTextUser = `Welcome back ${responseJson.username}! You will be redirected shortly.`;
                 document.cookie = `sessionCookie=${responseJson.sessionID}; expires=${responseJson.expires}; path=/;`;
                 
-                await new Promise(r => setTimeout(r, 2000));
+                await new Promise(r => setTimeout(r, 2000)); // wait 2 seconds before redirecting
 
                 window.location.href = `/user/${responseJson.username}`;
                 break;

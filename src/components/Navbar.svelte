@@ -1,22 +1,39 @@
-<script>
-    import Hamburger from './Hamburger.svelte';
+<script lang="ts">
+    import { onMount } from "svelte";
+    import Hamburger from "./Hamburger.svelte";
 
-    let imageSrc = 'CelerLogo.svg';
+    let imageSrc = "CelerLogo.svg";
     let isMenuOpen = false;
 
-    const toggleMenu = () => isMenuOpen = !isMenuOpen;
+    let linkList: HTMLUListElement;
+
+    $: {
+        if (linkList) {
+            const listItems = Array.from(linkList.children).filter(
+                (child): boolean => child.tagName === "LI"
+            ) as HTMLElement[];
+
+            listItems.forEach((item, index) => {
+                item.style.transitionDelay = `${index * 0.1}s`;
+                (item.children[0] as HTMLAnchorElement).tabIndex = isMenuOpen ? 0 : -1;
+            });
+        }
+    }
+
+    const toggleMenu = () => (isMenuOpen = !isMenuOpen);
 </script>
 
 <nav class:open={isMenuOpen}>
     <ul>
         <li>
-            <a href="/" on:focus={() => imageSrc = 'CelerLogo.svg'} on:blur={() => imageSrc = 'CelerLogo.svg'}> <!-- TODO: Make CelerLogo2.svg good and the same size as CelerLogo.svg -->
-                <img src={imageSrc} alt="Celer" title="Celer">
+            <a href="/" on:focus={() => (imageSrc = "CelerLogo.svg")} on:blur={() => (imageSrc = "CelerLogo.svg")}>
+                <!-- TODO: Make CelerLogo2.svg good and the same size as CelerLogo.svg -->
+                <img src={imageSrc} alt="Celer" title="Celer" />
             </a>
         </li>
     </ul>
 
-    <ul>
+    <ul bind:this={linkList}>
         <li>
             <a href="/">Home</a>
         </li>
@@ -30,7 +47,7 @@
 
     <ul>
         <li>
-            <Hamburger isOpen={isMenuOpen} toggleMenu={toggleMenu}/>
+            <Hamburger isOpen={isMenuOpen} {toggleMenu} />
         </li>
     </ul>
 </nav>
@@ -48,10 +65,10 @@
     }
     @media only screen and (prefers-color-scheme: dark) {
         :global(html) {
-            --navbar-background-color: #75756A;
+            --navbar-background-color: #75756a;
             --text-color: white;
             --submit-button-background-color: darkgreen;
-            --link-color: #0C88F7;
+            --link-color: #0c88f7;
         }
     }
     @media only screen and (prefers-color-scheme: light) {
@@ -59,14 +76,13 @@
             --navbar-background-color: beige;
             --text-color: black;
             --submit-button-background-color: green;
-            --link-color: #0000EE;
+            --link-color: #0000ee;
         }
     }
     :global(html) {
         --navbar-height: 60px;
         --secondary-opacity: 0.7;
     }
-
 
     nav {
         display: flex;
@@ -95,14 +111,20 @@
         padding: 0;
     }
 
-    nav, ul, li, a, img {
+    nav,
+    ul,
+    li,
+    a,
+    img {
         margin-top: 0;
         margin-bottom: 0;
 
         height: var(--navbar-height);
     }
 
-    li, a, img {
+    li,
+    a,
+    img {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -127,7 +149,7 @@
     }
 
     a:not(:has(> img))::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: 0;
         left: 0;
@@ -148,7 +170,7 @@
         color: var(--text-color);
         opacity: 1;
     }
-    
+
     nav ul:nth-child(3) {
         display: none;
     }
@@ -158,9 +180,6 @@
             display: inline-block;
         }
         nav ul:nth-child(2) {
-            display: none;
-        }
-        nav.open ul:nth-child(2){
             position: absolute;
 
             top: var(--navbar-height);
@@ -170,25 +189,42 @@
 
             display: flex;
             flex-direction: column;
-            gap: 10px;
-
+            gap: 0;
 
             padding: 0;
             margin: 0;
             border: 0;
             box-sizing: border-box;
-
-            background-color: var(--navbar-background-color);
         }
-        nav.open ul:nth-child(2) > li {
+        nav > ul:nth-child(2) > li {
             width: 100%;
+            background-color: var(--navbar-background-color);
+            
+            outline: none;
+            border: none;
+
+            margin: 0;
+            --pading-bottom-top: 10px;
+            padding-top: var(--pading-bottom-top);
+            padding-bottom: var(--pading-bottom-top);
+
+            transition: transform var(--animation);
+        }
+        nav:not(.open) ul:nth-child(2) > li {
+            transform: translateX(-100%);
+        }
+        nav.open > ul:nth-child(2) > li {
+            transform: translateX(0);
+        }
+        nav.open ul:nth-child(2) > li:last-of-type {
+            padding-bottom: 0;
         }
         nav.open ul:nth-child(2) > li > a {
             width: 100%;
             position: relative;
         }
         nav.open ul:nth-child(2) > li:not(:last-of-type) > a::before {
-            content: '';
+            content: "";
             width: 75%;
             height: 1px;
             position: absolute;
