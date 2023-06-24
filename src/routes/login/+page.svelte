@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Navbar from "../../components/Navbar.svelte";
+    import LoginInput from "../../components/loginInput.svelte";
 
     let isButtonDisabled = true;
     let passwordValue = "";
@@ -8,9 +9,6 @@
     let buttonHint = "Please fill in all fields";
 
     let responseTextUser = '';
-
-    let showPassword = false;
-    let passwordInput: HTMLInputElement;
 
     $: isButtonDisabled = !(passwordValue && usernameValue); // disable button if any of the fields are empty
     $: buttonHint = isButtonDisabled ? "Please fill in all fields" : "Login"; // change button hint depending on whether the button is disabled or not
@@ -61,11 +59,6 @@
         }
     }
 
-    const handleShowPassword = () => {
-        showPassword = !showPassword;
-        passwordInput.type = showPassword ? "text" : "password";
-    };
-
     onMount(() => {
         document.title = "Celer - Login";
     });
@@ -76,18 +69,10 @@
     <div id="login">
         <h3>Login now</h3>
         <p>{responseTextUser}</p>
-        <span>
-            <input type="text" id="username" name="username" placeholder=" " bind:value={usernameValue} autocomplete="username"/>
-            <label for="username">Username</label>
-        </span>
 
-        <span>
-            <input type="password" bind:this={passwordInput} id="password" name="password" placeholder=" " bind:value={passwordValue} autocomplete="current-password"/>
-            <label for="password">Password</label>
-            <button title={`${showPassword ? 'Hide':'Show'} Password`} on:click={handleShowPassword} id="showPasswordButton">
-                <i class={`bx bxs-${showPassword?'hide':'show'}`}></i>
-            </button>
-        </span>
+
+        <LoginInput type="text" bind:value={usernameValue}/>
+        <LoginInput type="password" bind:value={passwordValue}/>
 
         <button disabled={isButtonDisabled} title={buttonHint} on:click={login}>Login</button>
 
@@ -123,78 +108,6 @@
     }
     #login > h3 {
         margin-top: 0;
-    }
-    #login > span {
-        position: relative;
-        width: 100%;
-
-        margin-top: 30px;
-    }
-
-    #login > span::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0;
-        height: 2px;
-
-        background-color: var(--text-color);
-        opacity: var(--secondary-opacity);
-
-        transition: all var(--animation);
-    }
-    #login > span > input::placeholder {
-        display: none;
-    }
-    #login > span:focus-within::after,
-    #login > span > input:not(:placeholder-shown) + label::after {
-        width: 100%;
-    }
-
-    #login > span > input {
-        width: 90%;
-        background-color: transparent;
-        border: none;
-        color: var(--text-color);
-
-        padding-left: 2px;
-        padding-right: 2px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-
-        font-size: 1.2rem;
-    }
-    #login > span > input:focus {
-        outline: none;
-    }
-    #login > span > label {
-        position: absolute;
-        top: 0;
-        left: 0;
-
-        color: var(--text-color);
-        opacity: var(--secondary-opacity);
-
-        font-size: 1.2rem;
-
-        transition: all var(--animation);
-
-        -webkit-user-select: none; /* Safari */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* IE10+/Edge */
-        user-select: none; /* Standard */
-    }
-    #login > span:focus-within > label,
-    #login > span > input:not(:placeholder-shown) + label {
-        font-size: 15px;
-        top: -20px;
-    }
-
-    /* autofilled inputs */
-    #login > span > input:-webkit-autofill {
-        transition: background-color 5000s ease-in-out 0s;
-        -webkit-text-fill-color: var(--text-color);
     }
 
     #login > button {
@@ -248,16 +161,4 @@
         display: none;
     }
 
-    #showPasswordButton {
-        background-color: transparent;
-        border: none;
-
-        padding: 0;
-        margin: 0;
-
-        cursor: pointer;
-
-        color: var(--text-color);
-        font-size: 100%;
-    }
 </style>
