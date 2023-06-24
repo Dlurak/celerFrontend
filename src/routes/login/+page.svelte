@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import Navbar from "../../components/Navbar.svelte";
 
@@ -8,6 +8,9 @@
     let buttonHint = "Please fill in all fields";
 
     let responseTextUser = '';
+
+    let showPassword = false;
+    let passwordInput: HTMLInputElement;
 
     $: isButtonDisabled = !(passwordValue && usernameValue); // disable button if any of the fields are empty
     $: buttonHint = isButtonDisabled ? "Please fill in all fields" : "Login"; // change button hint depending on whether the button is disabled or not
@@ -58,6 +61,11 @@
         }
     }
 
+    const handleShowPassword = () => {
+        showPassword = !showPassword;
+        passwordInput.type = showPassword ? "text" : "password";
+    };
+
     onMount(() => {
         document.title = "Celer - Login";
     });
@@ -74,8 +82,11 @@
         </span>
 
         <span>
-            <input type="password" id="password" name="password" placeholder=" " bind:value={passwordValue} autocomplete="current-password"/>
+            <input type="password" bind:this={passwordInput} id="password" name="password" placeholder=" " bind:value={passwordValue} autocomplete="current-password"/>
             <label for="password">Password</label>
+            <button title={`${showPassword ? 'Hide':'Show'} Password`} on:click={handleShowPassword} id="showPasswordButton">
+                <i class={`bx bxs-${showPassword?'hide':'show'}`}></i>
+            </button>
         </span>
 
         <button disabled={isButtonDisabled} title={buttonHint} on:click={login}>Login</button>
@@ -142,7 +153,7 @@
     }
 
     #login > span > input {
-        width: 100%;
+        width: 90%;
         background-color: transparent;
         border: none;
         color: var(--text-color);
@@ -235,5 +246,18 @@
 
     p:empty {
         display: none;
+    }
+
+    #showPasswordButton {
+        background-color: transparent;
+        border: none;
+
+        padding: 0;
+        margin: 0;
+
+        cursor: pointer;
+
+        color: var(--text-color);
+        font-size: 100%;
     }
 </style>
