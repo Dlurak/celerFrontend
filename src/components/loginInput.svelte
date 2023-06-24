@@ -8,6 +8,7 @@
     let name = type==="password" ? "password" : "username";
     let showPassword = false;
     let autocomplete = type==='password' ? (newPassword ? 'new' : 'current') + '-password' : 'username';
+    let passwordIconSolidString = "bx"
 
     let inputField: HTMLInputElement;
     
@@ -15,6 +16,9 @@
         showPassword = !showPassword;
         inputField.type = showPassword ? "text" : "password";
     }
+
+    let passwordIcon: HTMLElement;
+    $: console.log(passwordIcon)
 
     onMount(() => {
         inputField.type = type;
@@ -25,8 +29,14 @@
     <input name={name} placeholder=" " bind:this={inputField} bind:value={value} autocomplete={autocomplete}>
     <label for={name}>{name}</label>
     {#if type==='password'}
-        <button title={`${showPassword ? 'Hide':'Show'} Password`} on:click={handleShowPassword} id="showPasswordButton">
-            <i class={`bx bxs-${showPassword?'hide':'show'}`}></i>
+        <button
+            title={`${showPassword ? 'Hide':'Show'} Password`}
+            on:click={handleShowPassword}
+            id="showPasswordButton"
+            on:focus={() => passwordIconSolidString = "bxs"}
+            on:blur={() => passwordIconSolidString = "bx"}
+        >
+            <i class={`bx ${passwordIconSolidString}-${showPassword?'hide':'show'}`}></i>
         </button>
     {/if}
 </span>
@@ -113,5 +123,8 @@
         aspect-ratio: 1/1;
         font-size: 100%;
         color: var(--text-color);
+    }
+    #showPasswordButton:focus {
+        outline: none;
     }
 </style>
