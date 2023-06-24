@@ -14,7 +14,9 @@
             ) as HTMLElement[];
 
             listItems.forEach((item, index) => {
-                item.style.transitionDelay = `${index * 0.1}s`;
+                // get prefers reduced motion
+                const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                item.style.transitionDelay = `${index * (prefersReducedMotion ? 0 : 0.1)}s`;
                 (item.children[0] as HTMLAnchorElement).tabIndex = isMenuOpen ? 0 : -1;
             });
         }
