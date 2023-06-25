@@ -3,7 +3,6 @@
     import Navbar from "../../components/Navbar.svelte";
     import LoginInput from "../../components/loginInput.svelte";
     import SubmitButton from "../../components/submitButton.svelte";
-    import { each } from "svelte/internal";
 
     const passwordStrengthColors = ['red', 'orangered', 'yellow', 'yellowgreen', 'green', 'lime']
     const validations = [

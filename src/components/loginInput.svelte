@@ -3,7 +3,8 @@
 
     export let type: "password" | "text";
     export let onInput: (e: Event) => void = () => {};
-    export let newPassword = false;
+    export let newPassword: boolean = false;
+    // export let newPassword = false;
     export let value = "";
 
     let name = type==="password" ? "password" : "username";
