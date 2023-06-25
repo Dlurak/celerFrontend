@@ -2,10 +2,16 @@
     import { onMount } from "svelte";
 
     export let type: "password" | "text";
+    export let onInput: (e: Event) => void = () => {};
+    export let newPassword: boolean = false;
+    // export let newPassword = false;
     export let value = "";
 
     let name = type==="password" ? "password" : "username";
     let showPassword = false;
+    let autocomplete = type==='password' ? (newPassword ? 'new' : 'current') + '-password' : 'username';
+    let passwordIconSolidString = "bx"
+
     let inputField: HTMLInputElement;
     
     const handleShowPassword = () => {
@@ -19,11 +25,17 @@
 </script>
 
 <span>
-    <input name={name} placeholder=" " bind:this={inputField} bind:value={value}>
+    <input name={name} placeholder=" " bind:this={inputField} bind:value={value} autocomplete={autocomplete} on:input={onInput} aria-labelledby="span > label">
     <label for={name}>{name}</label>
     {#if type==='password'}
-        <button title={`${showPassword ? 'Hide':'Show'} Password`} on:click={handleShowPassword} id="showPasswordButton">
-            <i class={`bx bxs-${showPassword?'hide':'show'}`}></i>
+        <button
+            title={`${showPassword ? 'Hide':'Show'} Password`}
+            on:click={handleShowPassword}
+            class="showPasswordButton"
+            on:focus={() => passwordIconSolidString = "bxs"}
+            on:blur={() => passwordIconSolidString = "bx"}
+        >
+            <i class={`bx ${passwordIconSolidString}-${showPassword?'hide':'show'}`}></i>
         </button>
     {/if}
 </span>
@@ -102,7 +114,7 @@
         -webkit-text-fill-color: var(--text-color);
     }
 
-    #showPasswordButton {
+    .showPasswordButton {
         background-color: transparent;
         border: none;
         outline: none;
@@ -110,5 +122,8 @@
         aspect-ratio: 1/1;
         font-size: 100%;
         color: var(--text-color);
+    }
+    .showPasswordButton:focus {
+        outline: none;
     }
 </style>
