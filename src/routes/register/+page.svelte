@@ -30,6 +30,8 @@
 
     let isListOpen = false;
 
+    let message = "";
+
     let passwordStrengthSpan:HTMLSpanElement;
     let strengthList:HTMLUListElement;
 
@@ -79,6 +81,49 @@
         colorBoxes();
     }
 
+    async function register() {
+        const configResponse = await fetch("config.json", {
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        });
+        const config = await configResponse.json();
+
+        const url = config.apiUrl + "/register";
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: usernameValue,
+                password: passwordValue,
+                passwordRepeat: passwordRepeatValue
+            })
+        });
+
+        const responseJson = await response.json();
+
+        switch (responseJson.error) {
+            case undefined:
+                message = "Successfully registered! You can now login.";
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 3000);
+                break;
+            case 'User already exists':
+                message = "User already exists. Choose a different username.";
+                break;
+            case "Password isn't secure enough":
+                message = "Password isn't secure enough. Please choose a different password. In the near future the register button will be disabled with passwords this weak.";
+                break;
+            default:
+                message = "An unknown error occured.";
+                break;
+        }
+    }
 
     onMount(() => {
         document.title = "Celer - Register";
@@ -105,8 +150,11 @@
                 <button class="v-shape" class:open={isListOpen} on:click={() => {isListOpen = !isListOpen}} title={isListOpen ? 'Collapse details' : 'Show details'}/>
             </div>
 
+            <p>
+                {message}
+            </p>
 
-            <SubmitButton title={buttonHint} disabled={buttonDisabled} onClick={() => {}}>
+            <SubmitButton title={buttonHint} disabled={buttonDisabled} onClick={register}>
                 Register
             </SubmitButton>
 
@@ -166,6 +214,10 @@
     }
     p {
         margin-top: 20px;
+    }
+
+    p:empty {
+        display: none;
     }
 
     #passwordStrength {
