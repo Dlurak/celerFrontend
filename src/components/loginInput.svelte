@@ -24,13 +24,13 @@
 </script>
 
 <span>
-    <input name={name} placeholder=" " bind:this={inputField} bind:value={value} autocomplete={autocomplete} on:input={onInput}>
+    <input name={name} placeholder=" " bind:this={inputField} bind:value={value} autocomplete={autocomplete} on:input={onInput} aria-labelledby="span > label">
     <label for={name}>{name}</label>
     {#if type==='password'}
         <button
             title={`${showPassword ? 'Hide':'Show'} Password`}
             on:click={handleShowPassword}
-            id="showPasswordButton"
+            class="showPasswordButton"
             on:focus={() => passwordIconSolidString = "bxs"}
             on:blur={() => passwordIconSolidString = "bx"}
         >
@@ -113,7 +113,7 @@
         -webkit-text-fill-color: var(--text-color);
     }
 
-    #showPasswordButton {
+    .showPasswordButton {
         background-color: transparent;
         border: none;
         outline: none;
@@ -122,7 +122,7 @@
         font-size: 100%;
         color: var(--text-color);
     }
-    #showPasswordButton:focus {
+    .showPasswordButton:focus {
         outline: none;
     }
 </style>

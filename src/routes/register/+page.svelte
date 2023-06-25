@@ -103,7 +103,7 @@
                         <span />
                     {/each}
                 </span>
-                <button class="v-shape" class:open={isListOpen} on:click={() => {isListOpen = !isListOpen}}/>
+                <button class="v-shape" class:open={isListOpen} on:click={() => {isListOpen = !isListOpen}} title={isListOpen ? 'Collapse details' : 'Show details'}/>
             </div>
 
 
@@ -118,11 +118,6 @@
 
         <div>
             <ul id="strengthList" bind:this={strengthList} class:open={isListOpen}>
-                <!-- <li>At least 12 characters long</li>
-                <li>At least one lower-case charachter</li>
-                <li>At least one upper-case charachter</li>
-                <li>At least one special charachter</li>
-                <li>At least one digit</li> -->
                 {#each validations as validation, index}
                     <li>{validation(passwordValue) ? '✔️':'❌'} {validationExplainations[index]}</li>
                 {/each}
@@ -191,7 +186,7 @@
     }
     #passwordStrength > span > span {
         display: inline-block;
-        width: 15%;
+        width: 17.5%;
         height: 30px;
         background-color: hsla(0, 0%, 0%, 0.2);
     }
