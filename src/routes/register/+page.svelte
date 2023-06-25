@@ -35,7 +35,13 @@
     let passwordStrengthSpan:HTMLSpanElement;
     let strengthList:HTMLUListElement;
 
-    $: buttonDisabled = !(usernameValue && passwordValue && passwordRepeatValue && passwordValue === passwordRepeatValue)
+
+    $: buttonDisabled = !(usernameValue &&
+        passwordValue &&
+        passwordRepeatValue &&
+        passwordValue === passwordRepeatValue &&
+        validations.reduce((count, validation) => count = validation(passwordValue) ? count + 1 : count, 0) >= 5
+    );
 
     $: {
         if (!(usernameValue && passwordValue && passwordRepeatValue)) {
@@ -115,9 +121,6 @@
                 break;
             case 'User already exists':
                 message = "User already exists. Choose a different username.";
-                break;
-            case "Password isn't secure enough":
-                message = "Password isn't secure enough. Please choose a different password. In the near future the register button will be disabled with passwords this weak.";
                 break;
             default:
                 message = "An unknown error occured.";
