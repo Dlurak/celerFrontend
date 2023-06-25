@@ -1,8 +1,6 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
-    import Navbar from '../components/Navbar.svelte';
-    import { preloadCode } from '$app/navigation';
 
 
     // use cute kana emojis for the error page
@@ -26,7 +24,6 @@
     })
 </script>
 
-<Navbar />
 <div id="container">
     <div>
         <h1>
@@ -57,6 +54,9 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+
+        padding: 70px;
+        box-sizing: border-box;
     }
     ul {
         display: flex;

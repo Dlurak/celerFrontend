@@ -1,6 +1,5 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Navbar from "../../components/Navbar.svelte";
     import LoginInput from "../../components/loginInput.svelte";
     import SubmitButton from "../../components/submitButton.svelte";
 
@@ -63,7 +62,6 @@
     });
 </script>
 
-<Navbar />
 <main>
     <div id="login">
         <h3>Login now</h3>
