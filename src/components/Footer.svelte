@@ -68,12 +68,15 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-around;
+        justify-content: space-between;
         flex-wrap: wrap;
         row-gap: 1rem;
         column-gap: 2rem;
 
         padding: 2rem;
+    }
+    footer > * {
+        flex: 1;
     }
     div > p {
         font-size: 1.5rem;
