@@ -1,8 +1,14 @@
 [
     {
-        "name": "GitHub",
+        "name": "GitHub Frontend",
         "url": "https://www.github.com/Dlurak/celerFrontend",
-        "description": "Frontend for Celer, a web-based chat client",
+        "description": "Frontend for Celer",
+        "boxIcon": "bxl-github"
+    },
+    {
+        "name": "GitHub Backend",
+        "url": "https://www.github.com/Dlurak/celerBackend",
+        "description": "Backend for Celer",
         "boxIcon": "bxl-github"
     }
 ]

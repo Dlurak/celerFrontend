@@ -63,13 +63,17 @@
 
 <style>
     footer{
-        background-color: hsla(0, 0%, 0%, 0.2);
-    }
-    footer {
+        background-color: var(--navbar-background-color);
+
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: space-around;
+        flex-wrap: wrap;
+        row-gap: 1rem;
+        column-gap: 2rem;
+
+        padding: 2rem;
     }
     div > p {
         font-size: 1.5rem;
@@ -79,7 +83,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-around;
     }
     img {
         width: 100px;
@@ -93,5 +97,25 @@
         display: flex;
         flex-direction: row;
         gap: 20px;
+    }
+
+    a {
+        color: var(--text-color);
+        font-size: 1.2rem;
+        opacity: var(--secondary-opacity);
+
+        transition: all var(--animation);
+    }
+
+    a:is(:hover, :focus, :active) {
+        opacity: 1;
+
+        outline: none;
+
+        text-shadow: 0 0 0.5rem var(--text-color);
+    }
+
+    i {
+        font-size: 2rem;
     }
 </style>
