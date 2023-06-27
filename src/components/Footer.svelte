@@ -47,7 +47,15 @@
     <div>
         <ul>
             {#each contactList as contact}
-                <li><a href={contact.url}>{contact.name}</a></li>
+                <li>
+                    <a href={contact.url} title={contact.name}>
+                        {#if contact.boxIcon !== ""}
+                            <i class={`bx ${contact.boxIcon}`} />
+                        {:else}
+                            {contact.name}
+                        {/if}
+                    </a>
+                </li>
             {/each}
         </ul>
     </div>
@@ -57,8 +65,7 @@
     footer{
         background-color: hsla(0, 0%, 0%, 0.2);
     }
-    footer,
-    footer > div:nth-child(1) {
+    footer {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -77,5 +84,14 @@
     img {
         width: 100px;
         aspect-ratio: 1/1;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
     }
 </style>
