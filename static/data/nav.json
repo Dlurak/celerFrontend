@@ -1,0 +1,22 @@
+{
+    "links": [
+        {
+            "title": "Home",
+            "path": "/",
+            "showInNav": true,
+            "showInFooter": true
+        },
+        {
+            "title": "About",
+            "path": "/about",
+            "showInNav": true,
+            "showInFooter": true
+        },
+        {
+            "title": "Contact",
+            "path": "/contact",
+            "showInNav": true,
+            "showInFooter": true
+        }
+    ]
+}

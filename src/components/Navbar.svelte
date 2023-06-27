@@ -1,8 +1,10 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Hamburger from "./Hamburger.svelte";
+    import { each } from "svelte/internal";
+    import type { NavbarData } from "./NavbarData";
 
-    let imageSrc = "CelerLogo.svg";
+    let imageSrc = "/CelerLogo.svg";
     let isMenuOpen = false;
 
     let linkList: HTMLUListElement;
@@ -23,10 +25,17 @@
     }
 
     const toggleMenu = () => (isMenuOpen = !isMenuOpen);
+    let links: NavbarData[] = [];
 
-    onMount(() => {
+    onMount(async () => {
         document.title = "Celer";
+
+        const data = await fetch('/data/nav.json');
+        const jsonData = await data.json();
+        links = jsonData.links;
     });
+
+    $: console.log(links);
 </script>
 
 <nav class:open={isMenuOpen}>
@@ -40,15 +49,13 @@
     </ul>
 
     <ul bind:this={linkList}>
-        <li>
-            <a href="/">Home</a>
-        </li>
-        <li>
-            <a href="/about">About Us</a>
-        </li>
-        <li>
-            <a href="/contact">Contact</a>
-        </li>
+        {#each links as link}
+            {#if link.showInNav}
+                <li>
+                    <a href={link.path}>{link.title}</a>
+                </li>
+            {/if}
+        {/each}
     </ul>
 
     <ul>
