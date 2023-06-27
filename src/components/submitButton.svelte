@@ -24,9 +24,7 @@
 
         margin-top: 20px;
 
-        font-weight: 600;
-
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 10px 0 black;
 
         transition: all var(--animation);
     }
@@ -34,7 +32,7 @@
     button:not(:disabled):focus {
         cursor: pointer;
         transform: scale(1.05);
-        box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0 15px 0 var(--submit-button-background-color);
         outline: none;
     }
     button:disabled {
@@ -44,6 +42,6 @@
     button:not(:disabled):active {
         cursor: grabbing;
         transform: scale(1);
-        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.8);
+        box-shadow: 0 0 20px 0 var(--submit-button-background-color);
     }
 </style>
