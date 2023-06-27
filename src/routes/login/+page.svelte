@@ -41,12 +41,10 @@
 
         switch (response.status) {
             case 200:
-                responseTextUser = `Welcome back ${responseJson.username}! You will be redirected shortly.`;
-                document.cookie = `sessionCookie=${responseJson.sessionID}; expires=${responseJson.expires}; path=/;`;
+                responseTextUser = `Welcome back ${responseJson.username}! (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧`;
+                localStorage.setItem("token", responseJson.token);
+                localStorage.setItem("username", responseJson.username);
                 
-                await new Promise(r => setTimeout(r, 2000)); // wait 2 seconds before redirecting
-
-                window.location.href = `/user/${responseJson.username}`;
                 break;
             case 401:
                 responseTextUser = 'Incorrect password or username ヽ(ಠ_ಠ)ノ';
