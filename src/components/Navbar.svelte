@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import Hamburger from "./Hamburger.svelte";
     import { each } from "svelte/internal";
-    import type { NavbarData } from "./NavbarData";
+    import type { NavbarData } from "./types/NavbarData"
 
     let imageSrc = "/CelerLogo.svg";
     let isMenuOpen = false;
@@ -34,8 +34,6 @@
         const jsonData = await data.json();
         links = jsonData.links;
     });
-
-    $: console.log(links);
 </script>
 
 <nav class:open={isMenuOpen}>
