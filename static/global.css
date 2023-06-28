@@ -9,12 +9,14 @@ body {
 @media only screen and (prefers-reduced-motion: reduce) {
     :root {
         --animation: 0s;
+        scroll-behavior: auto;
     }
 }
 
 @media only screen and (prefers-reduced-motion: no-preference) {
     :root {
         --animation: 0.3s ease-in-out;
+        scroll-behavior: smooth;
     }
 }
 @media only screen and (prefers-color-scheme: dark) {
@@ -48,4 +50,12 @@ body {
 
 body {
     color: var(--text-color);
+}
+
+* {
+    scroll-margin-top: 3rem;
+}
+
+*:target {
+    outline: 1px solid hsla(0, 100%, 50%, 0.5);
 }

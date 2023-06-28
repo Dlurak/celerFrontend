@@ -33,7 +33,7 @@
 <footer>
     <div>
         <img src="/CelerLogo.svg" alt="Celer">
-        <p>© 2021 Celer</p>
+        <p>© 2023 Celer</p>
     </div>
     <div>
         <ul>
