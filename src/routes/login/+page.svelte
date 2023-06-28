@@ -89,7 +89,7 @@
         justify-content: center;
         align-items: center;
 
-        height: calc(100vh - var(--navbar-height));
+        min-height: calc(100vh - var(--navbar-height));
     }
     #login {
         padding: 30px;

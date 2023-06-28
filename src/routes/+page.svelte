@@ -19,8 +19,10 @@
         min-height: calc(100vh - var(--navbar-height));
         padding: 70px;
         box-sizing: border-box;
+
+        max-width: 100%;
     }
     h1 {
-        font-size: 5rem;
+        font-size: 3rem;
     }
 </style>
