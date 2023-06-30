@@ -116,6 +116,8 @@
 
     a {
         text-decoration: none;
+
+        color: var(--text-color);
     }
 
     a:focus {
@@ -124,15 +126,14 @@
 
     /* the hover animation  */
 
-    a:not(:has(> img)) {
+    ul:nth-child(2) > li > a {
         position: relative;
-        color: var(--text-color);
         opacity: var(--secondary-opacity);
 
         transition: var(--animation);
     }
 
-    a:not(:has(> img))::after {
+    ul:nth-child(2) > li > a::after {
         content: "";
         position: absolute;
         bottom: 0;
@@ -144,8 +145,8 @@
         transition: var(--animation);
     }
 
-    a:not(:has(> img)):hover::after,
-    a:not(:has(> img)):focus::after {
+    ul:nth-child(2) > li > a:hover::after,
+    ul:nth-child(2) > li > a:focus::after {
         width: 100%;
     }
 
