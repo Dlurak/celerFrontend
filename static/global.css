@@ -3,6 +3,11 @@ body {
     padding: 0;
     max-width: 100%;
     width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 }
 
@@ -19,6 +24,7 @@ body {
         scroll-behavior: smooth;
     }
 }
+
 @media only screen and (prefers-color-scheme: dark) {
     :root {
         --navbar-background-color: #75756a;
@@ -31,6 +37,7 @@ body {
         background-color: hsl(0, 0%, 12%);
     }
 }
+
 @media only screen and (prefers-color-scheme: light) {
     :root {
         --navbar-background-color: beige;
