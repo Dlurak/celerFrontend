@@ -191,7 +191,7 @@
                             {#await getRouteLength(req.startLocation, req.destinationLocation)}
                                 <p>...</p>
                             {:then data}
-                                <p>{data}</p>
+                                <p>{data} KM</p>
                             {/await}
                         </span>
                         <span>
@@ -261,17 +261,34 @@
         margin: 1rem;
     }
 
+
     .route,
     .route > span {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
-        align-items: center;
+        align-items: flex-start;
+    }
+    .route > span {
+        width: 33%;
+        gap: 0.5rem;
+
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .route > span > p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        margin-block: 0;
     }
 
     .route,
     .special {
         gap: 1rem;
+        width: 100%;
     }
 
     .special {
