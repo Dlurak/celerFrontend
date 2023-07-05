@@ -1,7 +1,105 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Map from "../../components/Map.svelte";
-    import { json } from "@sveltejs/kit";
+
+    type groupsType = {
+        [key: string]: {
+            min: number;
+            max: number;
+        };
+    };
+
+    const weigthGroups: groupsType = {
+        // TODO: export this a to a json file
+        "extremely-light": {
+            min: 0,
+            max: 2,
+        },
+        light: {
+            min: 2,
+            max: 5,
+        },
+        moderate: {
+            min: 5,
+            max: 10,
+        },
+        heavy: {
+            min: 10,
+            max: 20,
+        },
+        "extremely-heavy": {
+            min: 20,
+            max: 1000,
+        },
+    };
+    const volumeGroups: groupsType = {
+        "extremely-small": {
+            min: 0,
+            max: 2,
+        },
+        small: {
+            min: 2,
+            max: 5,
+        },
+        moderate: {
+            min: 5,
+            max: 15,
+        },
+        large: {
+            min: 15,
+            max: 30,
+        },
+        "extremely-large": {
+            min: 30,
+            max: 1000,
+        },
+    };
+
+    const getAmountOfIcons = (weigth: number, groups: groupsType) => {
+        let amount = 0;
+        for (const group of Object.keys(groups)) {
+            amount++;
+            const groupObj = groups[group];
+            if (weigth >= groupObj.min && weigth < groupObj.max) {
+                break;
+            }
+        }
+        return amount;
+    };
+
+    /**
+     * Get the address of a location using nominatim
+     * @param lat latitude
+     * @param long longitude
+     * @returns the address of the location or null if there was an error
+     */
+    const getAddress = async (lat: number, long: number): Promise<string | void> => {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`;
+        const response = await fetch(url);
+        const data = (await response.json()) as { [key: string]: any };
+
+        // check if data has a error
+        if (data.hasOwnProperty("error")) {
+            return new Promise((resolve) => resolve());
+        }
+
+        return new Promise((resolve) => resolve(data.display_name));
+    };
+
+    /**
+     * Get the length of a route using the osrm api
+     * @param startLocation the start location of the route first element is latitude second is longitude
+     * @param destinationLocation the destination location of the route first element is latitude second is longitude
+     * @returns the length of the route in km
+     */
+    const getRouteLength = async (startLocation: [number, number], destinationLocation: [number, number]): Promise<number> => {
+        const url = `http://router.project-osrm.org/route/v1/driving/${startLocation[0]},${startLocation[1]};${destinationLocation[0]},${destinationLocation[1]}?overview=false&geometries=geojson`;
+        const response = await fetch(url);
+        const data = (await response.json()).routes[0].distance;
+
+        console.log(data / 1000);
+        return new Promise((resolve) => resolve(data / 1000));
+    };
 
     let requests: any[] = [];
 
@@ -13,8 +111,8 @@
         const configResponse = await fetch("config.json", {
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
+                Accept: "application/json",
+            },
         });
         const config = await configResponse.json();
 
@@ -23,9 +121,9 @@
         const response = await fetch(url, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
         });
 
         switch (response.status) {
@@ -38,8 +136,6 @@
 
         requests = await response.json();
     });
-
-    // $: console.log(requests);
 </script>
 
 <main>
@@ -51,39 +147,62 @@
         <ul>
             {#each requests as req}
                 <li>
-                    <h3>{req.thing}</h3>
+                    <h3>{req.title}</h3>
                     <p>{req.cargoDescription}</p>
-                    
+
                     <span class="sizeIndicator">
                         <span class="smallToBig">
-                            {#each Array.from({ length: 5}, (_, i) => i++) as number}
+                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as number}
                                 <i class="bx bx-dumbbell" />
                             {/each}
+                            <p>{JSON.stringify(req.cargoWeight)} KG</p>
                         </span>
+
                         <span class="smallToBig">
-                            {#each Array.from({ length: 5}, (_, i) => i++) as number}
+                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, volumeGroups) }, (_, i) => i++) as number}
                                 <i class="bx bxs-cube" />
                             {/each}
+                            <p>{JSON.stringify(req.cargoVolume)} Liter</p>
                         </span>
                     </span>
 
                     <span class="route">
                         <span>
                             <i class="bx bxs-map" />
-                            <p>Start adress</p>
+                            {#await getAddress(req.startLocation[0], req.startLocation[1])}
+                                <p>...</p>
+                            {:then data}
+                                {#if data}
+                                    <p>{data}</p>
+                                {:else}
+                                    <p>No address</p>
+                                {/if}
+                            {/await}
                         </span>
                         <span>
                             <i class="bx bx-trip" />
-                            <p>9,8 Km</p>
+                            {#await getRouteLength(req.startLocation, req.destinationLocation)}
+                                <p>...</p>
+                            {:then data}
+                                <p>{data}</p>
+                            {/await}
                         </span>
                         <span>
                             <i class="bx bxs-map" />
-                            <p>End adress</p>
+                            {#await getAddress(req.destinationLocation[0], req.destinationLocation[1])}
+                                <p>...</p>
+                            {:then data}
+                                {#if data}
+                                    <p>{data} KM</p>
+                                {:else}
+                                    <p>No address</p>
+                                {/if}
+                            {/await}
                         </span>
                     </span>
 
                     <span class="special">
-                        {#each ['wine', 'hot', 'bomb', 'dog'] as name}
+                        {#each ["wine", "hot", "bomb", "dog"] as name}
                             <i class={`bx bxs-${name} no`} />
                         {/each}
                     </span>
@@ -96,7 +215,6 @@
         <Map />
     </div>
 </main>
-
 
 <style>
     main {
@@ -178,7 +296,9 @@
         align-items: center;
         gap: 0.5rem;
     }
-
+    .smallToBig > p {
+        margin-block: 0;
+    }
 
     .no {
         position: relative;
@@ -196,7 +316,6 @@
         left: 0;
         top: 0;
     }
-
 
     #notFound {
         display: flex;
