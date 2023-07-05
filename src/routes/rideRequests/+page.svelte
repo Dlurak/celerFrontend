@@ -55,6 +55,13 @@
         },
     };
 
+    const specialitiesIcons: { [key: string]: string } = {
+        wine: "fragile",
+        hot: "flamable",
+        bomb: "explosive",
+        dog: "living",
+    };
+
     const getAmountOfIcons = (weigth: number, groups: groupsType) => {
         let amount = 0;
         for (const group of Object.keys(groups)) {
@@ -202,8 +209,8 @@
                     </span>
 
                     <span class="special">
-                        {#each ["wine", "hot", "bomb", "dog"] as name}
-                            <i class={`bx bxs-${name} no`} />
+                        {#each Object.keys(specialitiesIcons) as iconName}
+                            <i class={`bx bxs-${iconName}`} class:no={!req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])} />
                         {/each}
                     </span>
                 </li>
