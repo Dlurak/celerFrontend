@@ -185,19 +185,23 @@
         margin: 1rem;
     }
 
-    .route,
+    .route {
+        display: flex;
+        flex-direction: column;
+
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+    }
     .route > span {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: flex-start;
-    }
-    .route > span {
-        width: 33%;
+
+        width: 100%;
         gap: 0.5rem;
 
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
+        margin-block: 0;
     }
     .route > span > p {
         display: -webkit-box;
