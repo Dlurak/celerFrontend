@@ -32,7 +32,11 @@
 
 <footer>
     <div>
-        <img src="/CelerLogo.svg" alt="Celer">
+        <picture title="Celer">
+            <source srcset="/CelerLogoLightmode.svg" media="(prefers-color-scheme: light)" />
+            <source srcset="/CelerLogoDarkmode.svg" media="(prefers-color-scheme: dark)" />
+            <img src="/CelerLogoLightmode.svg" alt="Celer" title="Celer" />
+        </picture>
         <p>© 2023 Celer</p>
     </div>
     <div>

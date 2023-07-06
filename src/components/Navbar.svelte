@@ -1,18 +1,15 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Hamburger from "./Hamburger.svelte";
-    import type { NavbarData } from "../types/NavbarData"
+    import type { NavbarData } from "../types/NavbarData";
 
-    let imageSrc = "/CelerLogo.svg";
     let isMenuOpen = false;
 
     let linkList: HTMLUListElement;
 
     $: {
         if (linkList) {
-            const listItems = Array.from(linkList.children).filter(
-                (child): boolean => child.tagName === "LI"
-            ) as HTMLElement[];
+            const listItems = Array.from(linkList.children).filter((child): boolean => child.tagName === "LI") as HTMLElement[];
 
             listItems.forEach((item, index) => {
                 // get prefers reduced motion
@@ -29,7 +26,7 @@
     onMount(async () => {
         document.title = "Celer";
 
-        const data = await fetch('/data/nav.json');
+        const data = await fetch("/data/nav.json");
         const jsonData = await data.json();
         links = jsonData.links;
     });
@@ -38,9 +35,12 @@
 <nav class:open={isMenuOpen}>
     <ul>
         <li>
-            <a href="/" on:focus={() => (imageSrc = "CelerLogo.svg")} on:blur={() => (imageSrc = "CelerLogo.svg")}>
-                <!-- TODO: Make CelerLogo2.svg good and the same size as CelerLogo.svg -->
-                <img src={imageSrc} alt="Celer" title="Celer" />
+            <a href="/">
+                <picture title="Celer">
+                    <source srcset="/CelerLogoLightmode.svg" media="(prefers-color-scheme: light)" />
+                    <source srcset="/CelerLogoDarkmode.svg" media="(prefers-color-scheme: dark)" />
+                    <img src="/CelerLogoLightmode.svg" alt="Celer" title="Celer" />
+                </picture>
             </a>
         </li>
     </ul>
@@ -62,7 +62,7 @@
     </ul>
 </nav>
 
-<style> 
+<style>
     :global(html) {
         --navbar-height: 60px;
     }
@@ -179,13 +179,13 @@
             margin: 0;
             border: 0;
             box-sizing: border-box;
-            
+
             z-index: -1;
         }
         nav > ul:nth-child(2) > li {
             width: 100%;
             background-color: var(--navbar-background-color);
-            
+
             outline: none;
             border: none;
 
@@ -199,7 +199,7 @@
         nav:not(.open) ul:nth-child(2) > li {
             transform: translateX(-100%);
         }
-        
+
         nav.open > ul:nth-child(2) {
             z-index: 9999;
         }

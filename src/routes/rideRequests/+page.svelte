@@ -94,7 +94,6 @@
         <ul>
             {#each requests as req}
                 <li>
-                    {console.log(req)}
                     <h3>{req.title}</h3>
                     <p>{req.cargoDescription}</p>
 
