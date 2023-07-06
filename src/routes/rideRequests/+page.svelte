@@ -141,7 +141,12 @@
                     <span class="special">
                         {#each Object.keys(specialitiesIcons) as iconName}
                             <!-- TODO: Make this safe with #await -->
-                            <i class={`bx bxs-${iconName}`} class:no={!req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])} />
+
+                            {#if req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])}
+                                <i class={`bx bxs-${iconName}`} title={specialitiesIcons[iconName]} />
+                            {:else}
+                                <i class={`bx bxs-${iconName} no`} title={`Not ${specialitiesIcons[iconName]}`} />
+                            {/if}
                         {/each}
                     </span>
                 </li>
@@ -298,7 +303,7 @@
         align-items: center;
     }
 
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 800px) {
         main {
             flex-direction: column-reverse;
             height: max-content;
