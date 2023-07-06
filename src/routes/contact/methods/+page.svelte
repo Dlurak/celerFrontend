@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { ContactData } from "../../../components/types/ContactData";
+    import type { ContactData } from "../../../types/ContactData";
 
     let contactList: ContactData[] = [];
 

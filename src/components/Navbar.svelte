@@ -1,8 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Hamburger from "./Hamburger.svelte";
-    import { each } from "svelte/internal";
-    import type { NavbarData } from "./types/NavbarData"
+    import type { NavbarData } from "../types/NavbarData"
 
     let imageSrc = "/CelerLogo.svg";
     let isMenuOpen = false;

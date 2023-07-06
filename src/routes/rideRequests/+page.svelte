@@ -1,147 +1,87 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import Map from "../../components/Map.svelte";
+    import { getRouteLength } from "../../utils/getRouteLength";
+    import type { groupsType } from "../../types/groupsType";
+    import AddressLabel from "../../components/addressLabel.svelte";
 
-    type groupsType = {
-        [key: string]: {
-            min: number;
-            max: number;
-        };
-    };
+    let weigthGroups: groupsType;
+    let volumeGroups: groupsType;
 
-    const weigthGroups: groupsType = {
-        // TODO: export this a to a json file
-        "extremely-light": {
-            min: 0,
-            max: 2,
-        },
-        light: {
-            min: 2,
-            max: 5,
-        },
-        moderate: {
-            min: 5,
-            max: 10,
-        },
-        heavy: {
-            min: 10,
-            max: 20,
-        },
-        "extremely-heavy": {
-            min: 20,
-            max: 1000,
-        },
-    };
-    const volumeGroups: groupsType = {
-        "extremely-small": {
-            min: 0,
-            max: 2,
-        },
-        small: {
-            min: 2,
-            max: 5,
-        },
-        moderate: {
-            min: 5,
-            max: 15,
-        },
-        large: {
-            min: 15,
-            max: 30,
-        },
-        "extremely-large": {
-            min: 30,
-            max: 1000,
-        },
-    };
+    let specialitiesIcons: { [key: string]: string };
 
-    const specialitiesIcons: { [key: string]: string } = {
-        wine: "fragile",
-        hot: "flamable",
-        bomb: "explosive",
-        dog: "living",
-    };
-
-    const getAmountOfIcons = (weigth: number, groups: groupsType) => {
+    const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
         for (const group of Object.keys(groups)) {
             amount++;
             const groupObj = groups[group];
-            if (weigth >= groupObj.min && weigth < groupObj.max) {
+            if (value >= groupObj.min && value < groupObj.max) {
                 break;
             }
         }
         return amount;
     };
 
-    /**
-     * Get the address of a location using nominatim
-     * @param lat latitude
-     * @param long longitude
-     * @returns the address of the location or null if there was an error
-     */
-    const getAddress = async (lat: number, long: number): Promise<string | void> => {
-        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`;
-        const response = await fetch(url);
-        const data = (await response.json()) as { [key: string]: any };
-
-        // check if data has a error
-        if (data.hasOwnProperty("error")) {
-            return new Promise((resolve) => resolve());
-        }
-
-        return new Promise((resolve) => resolve(data.display_name));
-    };
-
-    /**
-     * Get the length of a route using the osrm api
-     * @param startLocation the start location of the route first element is latitude second is longitude
-     * @param destinationLocation the destination location of the route first element is latitude second is longitude
-     * @returns the length of the route in km
-     */
-    const getRouteLength = async (startLocation: [number, number], destinationLocation: [number, number]): Promise<number> => {
-        const url = `http://router.project-osrm.org/route/v1/driving/${startLocation[0]},${startLocation[1]};${destinationLocation[0]},${destinationLocation[1]}?overview=false&geometries=geojson`;
-        const response = await fetch(url);
-        const data = (await response.json()).routes[0].distance;
-
-        console.log(data / 1000);
-        return new Promise((resolve) => resolve(data / 1000));
-    };
-
     let requests: any[] = [];
 
     onMount(async () => {
+        document.title = "Celer - Ride Requests";
+
         const token = localStorage.getItem("token");
         if (!token) {
             window.location.href = "/login";
         }
-        const configResponse = await fetch("config.json", {
+
+        const config = fetch("config.json", {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
             },
+        }).then((res) => {
+            return res.json();
         });
-        const config = await configResponse.json();
 
-        const url = config.apiUrl + "/rideRequest";
+        const url = (await config).apiUrl + "/rideRequest";
 
-        const response = await fetch(url, {
+        const rideRequestsResponse = fetch(url, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
+        }).then((res) => {
+            switch (res.status) {
+                case 401:
+                case 403:
+                    localStorage.removeItem("token");
+                    window.location.href = "/login";
+                    break;
+            }
+            return res.json();
         });
 
-        switch (response.status) {
-            case 401:
-            case 403:
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-                break;
-        }
+        const specialitiesIconsPromise = fetch("/data/specialitiesIcons.json", {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        }).then((res) => {
+            return res.json();
+        });
 
-        requests = await response.json();
+        const groups = fetch("/data/groups.json", {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        }).then((res) => {
+            return res.json();
+        });
+
+        specialitiesIcons = await specialitiesIconsPromise;
+        weigthGroups = (await groups).weigthGroup;
+        volumeGroups = (await groups).volumeGroup;
+        requests = await rideRequestsResponse; // TODO: add error handling // TODO: add use promise.all
     });
 </script>
 
@@ -154,37 +94,30 @@
         <ul>
             {#each requests as req}
                 <li>
+                    {console.log(req)}
                     <h3>{req.title}</h3>
                     <p>{req.cargoDescription}</p>
 
                     <span class="sizeIndicator">
                         <span class="smallToBig">
-                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as number}
+                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as i}
                                 <i class="bx bx-dumbbell" />
                             {/each}
                             <p>{JSON.stringify(req.cargoWeight)} KG</p>
                         </span>
 
                         <span class="smallToBig">
-                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, volumeGroups) }, (_, i) => i++) as number}
+                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, volumeGroups) }, (_, i) => i++) as i}
                                 <i class="bx bxs-cube" />
                             {/each}
-                            <p>{JSON.stringify(req.cargoVolume)} Liter</p>
+                            <p>{JSON.stringify(req.cargoVolume)} Liters</p>
                         </span>
                     </span>
 
                     <span class="route">
                         <span>
                             <i class="bx bxs-map" />
-                            {#await getAddress(req.startLocation[0], req.startLocation[1])}
-                                <p>...</p>
-                            {:then data}
-                                {#if data}
-                                    <p>{data}</p>
-                                {:else}
-                                    <p>No address</p>
-                                {/if}
-                            {/await}
+                            <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
                         </span>
                         <span>
                             <i class="bx bx-trip" />
@@ -196,20 +129,12 @@
                         </span>
                         <span>
                             <i class="bx bxs-map" />
-                            {#await getAddress(req.destinationLocation[0], req.destinationLocation[1])}
-                                <p>...</p>
-                            {:then data}
-                                {#if data}
-                                    <p>{data} KM</p>
-                                {:else}
-                                    <p>No address</p>
-                                {/if}
-                            {/await}
+                            <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
                         </span>
                     </span>
 
                     <span class="special">
-                        {#each Object.keys(specialitiesIcons) as iconName}
+                        {#each Object.keys(specialitiesIcons) as iconName} <!-- TODO: Make this safe with #await -->
                             <i class={`bx bxs-${iconName}`} class:no={!req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])} />
                         {/each}
                     </span>
@@ -260,7 +185,6 @@
         height: fit-content;
         margin: 1rem;
     }
-
 
     .route,
     .route > span {

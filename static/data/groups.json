@@ -1,0 +1,46 @@
+{
+    "weigthGroup": {
+        "extremely-light": {
+            "min": 0,
+            "max": 2
+        },
+        "light": {
+            "min": 2,
+            "max": 5
+        },
+        "moderate": {
+            "min": 5,
+            "max": 10
+        },
+        "heavy": {
+            "min": 10,
+            "max": 20
+        },
+        "extremely-heavy": {
+            "min": 20,
+            "max": 1000
+        }
+    },
+    "volumeGroup": {
+        "extremely-small": {
+            "min": 0,
+            "max": 2
+        },
+        "small": {
+            "min": 2,
+            "max": 5
+        },
+        "moderate": {
+            "min": 5,
+            "max": 15
+        },
+        "large": {
+            "min": 15,
+            "max": 30
+        },
+        "extremely-large": {
+            "min": 30,
+            "max": 1000
+        }
+    }
+}

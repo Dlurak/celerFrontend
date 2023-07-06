@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { NavbarData } from "./types/NavbarData";
-    import type { ContactData } from "./types/ContactData";
+    import type { NavbarData } from "../types/NavbarData";
+    import type { ContactData } from "../types/ContactData";
         
 
     let linkList: NavbarData[] = [];
