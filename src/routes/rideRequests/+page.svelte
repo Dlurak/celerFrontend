@@ -97,6 +97,8 @@
                     <h3>{req.title}</h3>
                     <p>{req.cargoDescription}</p>
 
+                    <hr />
+
                     <span class="sizeIndicator">
                         <span class="smallToBig">
                             {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as i}
@@ -112,6 +114,8 @@
                             <p>{JSON.stringify(req.cargoVolume)} Liters</p>
                         </span>
                     </span>
+
+                    <hr />
 
                     <span class="route">
                         <span>
@@ -132,8 +136,11 @@
                         </span>
                     </span>
 
+                    <hr />
+
                     <span class="special">
-                        {#each Object.keys(specialitiesIcons) as iconName} <!-- TODO: Make this safe with #await -->
+                        {#each Object.keys(specialitiesIcons) as iconName}
+                            <!-- TODO: Make this safe with #await -->
                             <i class={`bx bxs-${iconName}`} class:no={!req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])} />
                         {/each}
                     </span>
@@ -183,6 +190,14 @@
 
         height: fit-content;
         margin: 1rem;
+    }
+
+    hr {
+        margin: 0.5rem 0;
+        width: 100%;
+        border: 1px solid var(--text-color);
+        opacity: var(--secondary-opacity);
+        border-radius: 100vmax;
     }
 
     .route {
