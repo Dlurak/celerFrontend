@@ -4,6 +4,7 @@
     import { getRouteLength } from "../../utils/getRouteLength";
     import type { groupsType } from "../../types/groupsType";
     import AddressLabel from "../../components/addressLabel.svelte";
+    import type { geoJSONrideRequests } from "../../types/geoJSON";
 
     let weigthGroups: groupsType;
     let volumeGroups: groupsType;
@@ -23,6 +24,8 @@
     };
 
     let requests: any[] = [];
+
+    let requestsGeoJSON: geoJSONrideRequests;
 
     onMount(async () => {
         document.title = "Celer - Ride Requests";
@@ -82,6 +85,25 @@
         weigthGroups = (await groups).weigthGroup;
         volumeGroups = (await groups).volumeGroup;
         requests = await rideRequestsResponse; // TODO: add error handling // TODO: add use promise.all
+
+        requestsGeoJSON = {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [0, 0]
+                    },
+                    properties: {
+                        id: 0,
+                        volume: 1,
+                        weight: 1
+                    }
+                }
+            ]
+        };
+        
     });
 </script>
 
@@ -155,7 +177,7 @@
     {/if}
 
     <div id="mapContainer">
-        <Map />
+        <Map data={requestsGeoJSON}/>
     </div>
 </main>
 

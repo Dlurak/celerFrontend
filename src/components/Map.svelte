@@ -3,11 +3,15 @@
     import { Map } from "maplibre-gl";
     import "maplibre-gl/dist/maplibre-gl.css";
     import { PUBLIC_MAPTILER_API_TOKEN } from "$env/static/public";
+    import type { geoJSONrideRequests } from "../types/geoJSON";
 
     let apiKey = PUBLIC_MAPTILER_API_TOKEN;
 
     let map: Map;
     let mapContainer: HTMLDivElement;
+
+
+    export let data: geoJSONrideRequests;
 
     onMount(() => {
         const initialState = {
@@ -23,26 +27,15 @@
             zoom: initialState.zoom,
         });
 
+        console.trace(data)
+
         map.on("load", () => {
             map.addSource("rides", {
                 type: "geojson",
-                data: {
-                    type: "FeatureCollection",
-                    features: [
-                        {
-                            type: "Feature",
-                            geometry: {
-                                type: "Point",
-                                coordinates: [5, 34],
-                            },
-                        },
-                    ],
-                },
+                data: data
             });
             map.loadImage("/car-solid-240.png", (error, image) => {
                 if (error) throw error;
-                console.log(image);
-                console.log(typeof image);
                 map.addImage("car-highres", image as any);
             });
 
@@ -59,10 +52,12 @@
     });
 </script>
 
+
 <div class="map-wrap">
     <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo" /></a>
     <div class="map" bind:this={mapContainer} />
 </div>
+
 
 <style>
     .map-wrap {
