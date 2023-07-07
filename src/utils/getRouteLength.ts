@@ -9,6 +9,5 @@ export const getRouteLength = async (startLocation: [number, number], destinatio
     const response = await fetch(url);
     const data = (await response.json()).routes[0].distance;
 
-    console.log(data / 1000);
     return new Promise((resolve) => resolve(data / 1000));
 };

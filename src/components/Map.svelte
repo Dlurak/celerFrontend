@@ -27,8 +27,6 @@
             zoom: initialState.zoom,
         });
 
-        console.trace(data)
-
         map.on("load", () => {
             map.addSource("rides", {
                 type: "geojson",
