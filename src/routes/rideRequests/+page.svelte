@@ -89,20 +89,23 @@
         requestsGeoJSON = {
             type: "FeatureCollection",
             features: [
-                {
-                    type: "Feature",
-                    geometry: {
-                        type: "Point",
-                        coordinates: [0, 0]
-                    },
-                    properties: {
-                        id: 0,
-                        volume: 1,
-                        weight: 1
-                    }
-                }
             ]
         };
+
+        for (const request of requests) {
+            requestsGeoJSON.features.push({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: request.startLocation.reverse()
+                },
+                properties: {
+                    id: request._id,
+                    volume: request.cargoVolume,
+                    weight: request.cargoWeight
+                }
+            });
+        }
         
     });
 </script>
@@ -142,7 +145,7 @@
                     <span class="route">
                         <span>
                             <i class="bx bxs-map" />
-                            <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
+                            <AddressLabel lat={req.startLocation[0]} lng={req.startLocation[1]} />
                         </span>
                         <span>
                             <i class="bx bx-trip" />
@@ -154,7 +157,7 @@
                         </span>
                         <span>
                             <i class="bx bxs-map" />
-                            <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
+                            <AddressLabel lat={req.startLocation[0]} lng={req.startLocation[1]} />
                         </span>
                     </span>
 
