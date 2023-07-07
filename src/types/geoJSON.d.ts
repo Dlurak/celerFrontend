@@ -1,4 +1,4 @@
-export type geoJSONrideRequests = {
+export interface geoJSONrideRequests {
     "type": "FeatureCollection";
     "features": {
         "type": "Feature";
