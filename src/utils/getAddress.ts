@@ -4,15 +4,29 @@
      * @param long longitude
      * @returns the address of the location or null if there was an error
      */
-export const getAddress = async (lat: number, long: number): Promise<string | void> => {    
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${long}&format=json`;
-    const response = await fetch(url);
-    const data = (await response.json()) as { [key: string]: any };
+export const getAddress = async (lat: number, long: number): Promise<string | void> => {
+    let cache = JSON.parse(localStorage.getItem('addressCache') || '{}');
 
-    // check if data has a error
-    if (data.hasOwnProperty("error")) {
-        return new Promise((resolve) => resolve());
+    console.table({ lat, long });
+
+    if (cache.hasOwnProperty(`${lat}|${long}`)) {
+        return new Promise((resolve) => resolve(cache[`${lat}|${long}`]));
+    } else {
+        const url = `https://geocode.maps.co/reverse?lat=${lat}&lon=${long}`
+        const response = await fetch(url);
+        const data = (await response.json()) as { [key: string]: any };
+
+        let address: string;
+
+        if (data.hasOwnProperty("error")) {
+            const message = 'The address could not be found ¯\\_(ツ)_/¯'
+            address = message;
+        } else {
+            address = data.display_name;
+        }
+
+        localStorage.setItem('addressCache', JSON.stringify({ ...cache, [`${lat}|${long}`]: address }));
+
+        return new Promise((resolve) => resolve(address));
     }
-
-    return new Promise((resolve) => resolve(data.display_name));
 };

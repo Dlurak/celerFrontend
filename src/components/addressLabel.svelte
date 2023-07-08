@@ -5,7 +5,7 @@
     export let lat: number;
 </script>
 
-{#await getAddress(lng, lat)}
+{#await getAddress(lat, lng)}
     <p>loading...</p>
 {:then address}
     <p>{address}</p>

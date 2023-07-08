@@ -30,7 +30,6 @@
 
     let requestsGeoJSON: geoJSONrideRequests;
 
-
     onMount(async () => {
         document.title = "Celer - Ride Requests";
 
@@ -92,8 +91,7 @@
 
         requestsGeoJSON = {
             type: "FeatureCollection",
-            features: [
-            ]
+            features: [],
         };
 
         for (const request of requests) {
@@ -101,16 +99,16 @@
                 type: "Feature",
                 geometry: {
                     type: "Point",
-                    coordinates: request.startLocation.reverse()
+                    coordinates: request.startLocation.reverse(),
                 },
                 properties: {
                     id: request._id,
                     volume: request.cargoVolume,
-                    weight: request.cargoWeight
-                }
+                    weight: request.cargoWeight,
+                },
             });
         }
-        
+
         setInterval(() => {
             time = new Date();
         }, 1000);
@@ -129,7 +127,7 @@
                     <span class="firstRow">
                         <h3>{req.title}</h3>
                         {#key time}
-                            <p>{formatSeconds(Math.floor((Date.now() - req.createdAt)/1000))} ago</p>
+                            <p>{formatSeconds(Math.floor((Date.now() - req.createdAt) / 1000))} ago</p>
                         {/key}
                     </span>
                     <p>{req.cargoDescription}</p>
@@ -169,7 +167,7 @@
                         </span>
                         <span>
                             <i class="bx bxs-map" />
-                            <AddressLabel lat={req.startLocation[0]} lng={req.startLocation[1]} />
+                            <AddressLabel lat={req.destinationLocation[0]} lng={req.destinationLocation[1]} />
                         </span>
                     </span>
 
@@ -192,7 +190,7 @@
     {/if}
 
     <div id="mapContainer">
-        <Map data={requestsGeoJSON}/>
+        <Map data={requestsGeoJSON} />
     </div>
 </main>
 
