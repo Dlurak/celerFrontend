@@ -6,6 +6,7 @@
     import AddressLabel from "../../components/addressLabel.svelte";
     import type { geoJSONrideRequests } from "../../types/geoJSON";
     import { formatSeconds } from "../../utils/formatTimeFromStamp";
+    import RouteLength from "../../components/routeLength.svelte";
 
     let weigthGroups: groupsType;
     let volumeGroups: groupsType;
@@ -155,15 +156,11 @@
                     <span class="route">
                         <span>
                             <i class="bx bxs-map" />
-                            <AddressLabel lat={req.startLocation[0]} lng={req.startLocation[1]} />
+                            <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
                         </span>
                         <span>
                             <i class="bx bx-trip" />
-                            {#await getRouteLength(req.startLocation, req.destinationLocation)}
-                                <p>...</p>
-                            {:then data}
-                                <p>{data} KM</p>
-                            {/await}
+                            <RouteLength startLocation={req.startLocation} destinationLocation={req.destinationLocation} />
                         </span>
                         <span>
                             <i class="bx bxs-map" />
@@ -273,14 +270,6 @@
 
         width: 100%;
         gap: 0.5rem;
-
-        margin-block: 0;
-    }
-    .route > span > p {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
 
         margin-block: 0;
     }

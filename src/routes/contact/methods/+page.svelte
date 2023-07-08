@@ -7,16 +7,14 @@
     onMount(async () => {
         document.title = "Celer - Contact Methods";
 
-        const contact = fetch('/data/contact.json')
-            .then(data => data.json())
-            .then(jsonData => {
+        const contact = fetch("/data/contact.json")
+            .then((data) => data.json())
+            .then((jsonData) => {
                 return jsonData;
             });
 
         contactList = await contact;
     });
-
-    $: console.log(contactList);
 </script>
 
 <ul>
@@ -45,7 +43,6 @@
         justify-content: space-evenly;
         align-items: center;
         padding-inline: 2rem;
-        
     }
     li {
         list-style: none;
