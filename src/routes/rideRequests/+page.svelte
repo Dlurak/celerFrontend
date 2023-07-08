@@ -5,11 +5,14 @@
     import type { groupsType } from "../../types/groupsType";
     import AddressLabel from "../../components/addressLabel.svelte";
     import type { geoJSONrideRequests } from "../../types/geoJSON";
+    import { formatSeconds } from "../../utils/formatTimeFromStamp";
 
     let weigthGroups: groupsType;
     let volumeGroups: groupsType;
 
     let specialitiesIcons: { [key: string]: string };
+
+    let time = new Date();
 
     const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
@@ -26,6 +29,7 @@
     let requests: any[] = [];
 
     let requestsGeoJSON: geoJSONrideRequests;
+
 
     onMount(async () => {
         document.title = "Celer - Ride Requests";
@@ -44,7 +48,7 @@
             return res.json();
         });
 
-        const url = (await config).apiUrl + "/rideRequest";
+        const url = (await config).apiUrl + "/rideRequest/all";
 
         const rideRequestsResponse = fetch(url, {
             method: "GET",
@@ -107,6 +111,9 @@
             });
         }
         
+        setInterval(() => {
+            time = new Date();
+        }, 1000);
     });
 </script>
 
@@ -119,7 +126,12 @@
         <ul>
             {#each requests as req}
                 <li>
-                    <h3>{req.title}</h3>
+                    <span class="firstRow">
+                        <h3>{req.title}</h3>
+                        {#key time}
+                            <p>{formatSeconds(Math.floor((Date.now() - req.createdAt)/1000))} ago</p>
+                        {/key}
+                    </span>
                     <p>{req.cargoDescription}</p>
 
                     <hr />
@@ -228,6 +240,24 @@
         border: 1px solid var(--text-color);
         opacity: var(--secondary-opacity);
         border-radius: 100vmax;
+    }
+
+    .firstRow {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-items: center;
+
+        gap: 1rem;
+    }
+
+    .firstRow > p {
+        font-size: 0.8rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .route {
