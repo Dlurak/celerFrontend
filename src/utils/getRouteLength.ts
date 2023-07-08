@@ -5,6 +5,9 @@
      * @returns the length of the route in km
      */
 export const getRouteLength = async (startLocation: [number, number], destinationLocation: [number, number]): Promise<number | undefined> => {
+
+    console.log(startLocation, destinationLocation);
+
     const url = `http://router.project-osrm.org/route/v1/driving/${startLocation[0]},${startLocation[1]};${destinationLocation[0]},${destinationLocation[1]}?overview=false&geometries=geojson`;
     const response = await fetch(url);
     switch (response.status) {

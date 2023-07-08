@@ -6,7 +6,7 @@
     export let destinationLocation: [number, number];
 </script>
 
-{#await getRouteLength(startLocation, destinationLocation)}
+{#await getRouteLength(startLocation, [destinationLocation[1], destinationLocation[0]])}
     <Loader />
 {:then data}
     {#if data}

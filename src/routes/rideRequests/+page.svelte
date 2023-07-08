@@ -160,7 +160,7 @@
                         </span>
                         <span>
                             <i class="bx bx-trip" />
-                            <RouteLength startLocation={req.startLocation} destinationLocation={req.destinationLocation} />
+                            <RouteLength startLocation={[req.startLocation[1], req.startLocation[0]]} destinationLocation={[req.destinationLocation[1], req.destinationLocation[0]]} />
                         </span>
                         <span>
                             <i class="bx bxs-map" />
@@ -345,19 +345,29 @@
         align-items: center;
     }
 
-    @media only screen and (max-width: 800px) {
+    @media only screen and (max-width: 1000px) {
         main {
             flex-direction: column-reverse;
             height: max-content;
         }
         main > #mapContainer {
             flex: 1;
-            aspect-ratio: 1/1.25;
+            aspect-ratio: 1/0.75;
         }
         main > ul,
         #notFound {
             flex: 1;
             height: fit-content;
+        }
+
+        main > ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+    }
+    @media only screen and (max-width: 500px) {
+        main > #mapContainer {
+            aspect-ratio: 1/1.125;
         }
     }
 </style>
