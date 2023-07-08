@@ -9,12 +9,24 @@
         {
             "title": "About",
             "path": "/about",
-            "showInNav": true,
+            "showInNav": false,
             "showInFooter": true
         },
         {
             "title": "Contact",
             "path": "/contact",
+            "showInNav": false,
+            "showInFooter": true
+        },
+        {
+            "title": "Ride Requests",
+            "path": "/rideRequests",
+            "showInNav": true,
+            "showInFooter": false
+        },
+        {
+            "title": "Login",
+            "path": "/login",
             "showInNav": true,
             "showInFooter": true
         }

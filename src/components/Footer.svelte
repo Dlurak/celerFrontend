@@ -2,31 +2,28 @@
     import { onMount } from "svelte";
     import type { NavbarData } from "../types/NavbarData";
     import type { ContactData } from "../types/ContactData";
-        
 
     let linkList: NavbarData[] = [];
     let contactList: ContactData[] = [];
 
-
     onMount(async () => {
         document.title = "Celer";
 
-        const linkData = fetch('/data/nav.json')
-            .then(data => data.json())
-            .then(jsonData => {
+        const linkData = fetch("/data/nav.json")
+            .then((data) => data.json())
+            .then((jsonData) => {
                 return jsonData.links;
             });
 
-        const contactData = fetch('/data/contact.json')
-            .then(data => data.json())
-            .then(jsonData => {
+        const contactData = fetch("/data/contact.json")
+            .then((data) => data.json())
+            .then((jsonData) => {
                 return jsonData;
             });
 
         linkList = await linkData;
         // check if await contactData is type ContactData
         contactList = await contactData;
-
     });
 </script>
 
@@ -42,7 +39,7 @@
     <div>
         <ul>
             {#each linkList as link}
-                {#if link.showInNav}
+                {#if link.showInFooter}
                     <li><a href={link.path}>{link.title}</a></li>
                 {/if}
             {/each}
@@ -66,7 +63,7 @@
 </footer>
 
 <style>
-    footer{
+    footer {
         background-color: var(--navbar-background-color);
 
         display: flex;
