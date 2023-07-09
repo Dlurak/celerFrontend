@@ -1,79 +1,40 @@
-<script lang="ts">
+<script>
     import { onMount } from "svelte";
-    import { Map } from "maplibre-gl";
-    import "maplibre-gl/dist/maplibre-gl.css";
-    import { PUBLIC_MAPTILER_API_TOKEN } from "$env/static/public";
-    import type { geoJSONrideRequests } from "../types/geoJSON";
+    import { browser } from "$app/environment";
 
-    let apiKey = PUBLIC_MAPTILER_API_TOKEN;
-
-    let map: Map;
-    let mapContainer: HTMLDivElement;
-
-
-    export let data: geoJSONrideRequests;
+    let map;
 
     onMount(() => {
-        const initialState = {
-            lng: 5,
-            lat: 34,
-            zoom: 2,
-        };
+        if (browser) {
+            // @ts-ignore
+            let L = window.L;
 
-        map = new Map({
-            container: mapContainer,
-            style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${apiKey}`,
-            center: [initialState.lng, initialState.lat],
-            zoom: initialState.zoom,
-        });
-
-        map.on("load", () => {
-            map.addSource("rides", {
-                type: "geojson",
-                data: data
-            });
-            map.loadImage("/car-solid-240.png", (error, image) => {
-                if (error) throw error;
-                map.addImage("car-highres", image as any);
-            });
-
-            map.addLayer({
-                id: "points",
-                type: "symbol",
-                source: "rides",
-                layout: {
-                    "icon-image": "car-highres",
-                    "icon-size": 0.2,
-                },
-            });
-        });
+            map = L.map("map").setView([51.505, -0.09], 14);
+            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            }).addTo(map);
+        }
     });
 </script>
 
+<svelte:head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</svelte:head>
 
-<div class="map-wrap">
-    <a href="https://www.maptiler.com" class="watermark"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo" /></a>
-    <div class="map" bind:this={mapContainer} />
-</div>
+<div id="map" />
 
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""
+/>
 
 <style>
-    .map-wrap {
-        position: relative;
-        width: 100%;
-        height: 100%; /* calculate height of the screen minus the heading */
-    }
-
-    .map {
-        position: absolute;
-        width: 100%;
+    #map {
         height: 100%;
-    }
-
-    .watermark {
-        position: absolute;
-        left: 10px;
-        bottom: 10px;
-        z-index: 1;
+        width: 100%;
     }
 </style>

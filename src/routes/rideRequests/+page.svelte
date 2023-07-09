@@ -1,12 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Map from "../../components/Map.svelte";
-    import { getRouteLength } from "../../utils/getRouteLength";
     import type { groupsType } from "../../types/groupsType";
     import AddressLabel from "../../components/addressLabel.svelte";
     import type { geoJSONrideRequests } from "../../types/geoJSON";
     import { formatSeconds } from "../../utils/formatTimeFromStamp";
     import RouteLength from "../../components/routeLength.svelte";
+    import Map from "../../components/Map.svelte";
 
     let weigthGroups: groupsType;
     let volumeGroups: groupsType;
@@ -14,6 +13,8 @@
     let specialitiesIcons: { [key: string]: string };
 
     let time = new Date();
+
+    let page = 1;
 
     const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
@@ -117,127 +118,218 @@
 </script>
 
 <main>
-    {#if requests.length === 0}
-        <div id="notFound">
-            <p>There are no ride requests as for now</p>
-        </div>
-    {:else}
-        <ul>
-            {#each requests as req}
-                <li>
-                    <span class="firstRow">
-                        <h3>{req.title}</h3>
-                        {#key time}
-                            <p>{formatSeconds(Math.floor((Date.now() - req.createdAt) / 1000))} ago</p>
-                        {/key}
-                    </span>
-                    <p>{req.cargoDescription}</p>
+    <aside>
+        {#if requests.length === 0}
+            <div id="notFound">
+                <p>There are no ride requests as for now</p>
+            </div>
+        {:else}
+            <div id="sidePanell">
+                <ul>
+                    {#each requests as req}
+                        <li>
+                            <span class="firstRow">
+                                <h3>{req.title}</h3>
+                                {#key time}
+                                    <p>{formatSeconds(Math.floor((Date.now() - req.createdAt) / 1000))} ago</p>
+                                {/key}
+                            </span>
+                            <p>{req.cargoDescription}</p>
 
-                    <hr />
+                            <hr />
 
-                    <span class="sizeIndicator">
-                        <span class="smallToBig">
-                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as i}
-                                <i class="bx bx-dumbbell" />
-                            {/each}
-                            <p>{JSON.stringify(req.cargoWeight)} KG</p>
-                        </span>
+                            <span class="sizeIndicator">
+                                <span class="smallToBig">
+                                    {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as i}
+                                        <i class="bx bx-dumbbell" />
+                                    {/each}
+                                    <p>{JSON.stringify(req.cargoWeight)} KG</p>
+                                </span>
 
-                        <span class="smallToBig">
-                            {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, volumeGroups) }, (_, i) => i++) as i}
-                                <i class="bx bxs-cube" />
-                            {/each}
-                            <p>{JSON.stringify(req.cargoVolume)} Liters</p>
-                        </span>
-                    </span>
+                                <span class="smallToBig">
+                                    {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, volumeGroups) }, (_, i) => i++) as i}
+                                        <i class="bx bxs-cube" />
+                                    {/each}
+                                    <p>{JSON.stringify(req.cargoVolume)} Liters</p>
+                                </span>
+                            </span>
 
-                    <hr />
+                            <hr />
 
-                    <span class="route">
-                        <span>
-                            <i class="bx bxs-map" />
-                            <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
-                        </span>
-                        <span>
-                            <i class="bx bx-trip" />
-                            <RouteLength startLocation={[req.startLocation[1], req.startLocation[0]]} destinationLocation={[req.destinationLocation[1], req.destinationLocation[0]]} />
-                        </span>
-                        <span>
-                            <i class="bx bxs-map" />
-                            <AddressLabel lat={req.destinationLocation[0]} lng={req.destinationLocation[1]} />
-                        </span>
-                    </span>
+                            <span class="route">
+                                <span>
+                                    <i class="bx bxs-map" />
+                                    <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
+                                </span>
+                                <span>
+                                    <i class="bx bx-trip" />
+                                    <RouteLength startLocation={[req.startLocation[1], req.startLocation[0]]} destinationLocation={[req.destinationLocation[1], req.destinationLocation[0]]} />
+                                </span>
+                                <span>
+                                    <i class="bx bxs-map" />
+                                    <AddressLabel lat={req.destinationLocation[0]} lng={req.destinationLocation[1]} />
+                                </span>
+                            </span>
 
-                    <hr />
+                            <hr />
 
-                    <span class="special">
-                        {#each Object.keys(specialitiesIcons) as iconName}
-                            <!-- TODO: Make this safe with #await -->
+                            <span class="special">
+                                {#each Object.keys(specialitiesIcons) as iconName}
+                                    <!-- TODO: Make this safe with #await -->
 
-                            {#if req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])}
-                                <i class={`bx bxs-${iconName}`} title={specialitiesIcons[iconName]} />
-                            {:else}
-                                <i class={`bx bxs-${iconName} no`} title={`Not ${specialitiesIcons[iconName]}`} />
-                            {/if}
-                        {/each}
-                    </span>
-                </li>
-            {/each}
-        </ul>
-    {/if}
+                                    {#if req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])}
+                                        <i class={`bx bxs-${iconName}`} title={specialitiesIcons[iconName]} />
+                                    {:else}
+                                        <i class={`bx bxs-${iconName} no`} title={`Not ${specialitiesIcons[iconName]}`} />
+                                    {/if}
+                                {/each}
+                            </span>
+                        </li>
+                    {/each}
+                </ul>
+                <div id="pageNumberButtonsContainer">
+                    <button
+                        class="bx bx-chevrons-left"
+                        title="First pag"
+                        on:click={() => {
+                            page = 1;
+                        }}
+                        disabled={page <= 1}
+                    />
+                    <button
+                        class="bx bx-chevron-left"
+                        title="Previous page"
+                        on:click={() => {
+                            page -= 1;
+                        }}
+                        disabled={page <= 1}
+                    />
+                    <button
+                        class="bx bx-chevron-right"
+                        title="Next page"
+                        on:click={() => {
+                            page += 1;
+                        }}
+                    />
+                </div>
+            </div>
+        {/if}
+    </aside>
 
     <div id="mapContainer">
-        <Map data={requestsGeoJSON} />
+        <Map />
     </div>
 </main>
 
 <style>
-    main {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        height: 100vh;
-    }
-    main > #mapContainer {
-        flex: 3;
-    }
-    main > ul,
     #notFound {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        flex: 1;
-    }
-
-    main * {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         height: 100%;
     }
 
-    main > ul {
-        overflow-y: scroll;
-    }
-
-    main > ul > li {
-        padding: 1rem;
-        background-color: hsla(0, 0%, 0%, 0.2);
-
-        border-radius: 15px;
+    #sidePanell {
         display: flex;
         flex-direction: column;
 
-        height: fit-content;
-        margin: 1rem;
+        gap: 1rem;
     }
 
-    hr {
-        margin: 0.5rem 0;
-        width: 100%;
-        border: 1px solid var(--text-color);
-        opacity: var(--secondary-opacity);
-        border-radius: 100vmax;
+    #pageNumberButtonsContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        flex-direction: row;
+
+        border-radius: 15px;
     }
 
-    .firstRow {
+    #pageNumberButtonsContainer > button {
+        background-color: hsla(0, 0%, 0%, 0.2);
+
+        color: var(--text-color);
+
+        font-size: 1.5rem;
+
+        width: 30%;
+
+        padding: 1rem;
+
+        border-radius: 2px;
+        border-color: transparent;
+        border-style: solid;
+
+        cursor: pointer;
+        transition: background-color var(--animation);
+    }
+
+    #pageNumberButtonsContainer > button:hover,
+    #pageNumberButtonsContainer > button:active,
+    #pageNumberButtonsContainer > button:focus {
+        background-color: hsla(0, 0%, 0%, 0.4);
+    }
+
+    #pageNumberButtonsContainer > button:focus {
+        outline: 1px solid var(--text-color);
+    }
+
+    #pageNumberButtonsContainer > button:disabled {
+        cursor: not-allowed;
+
+        filter: contrast(0.5);
+    }
+
+    #pageNumberButtonsContainer > button:first-of-type {
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+    }
+
+    #pageNumberButtonsContainer > button:last-of-type {
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    #pageNumberButtonsContainer,
+    ul {
+        padding: 1rem;
+        margin: 0.5rem;
+
+        background-color: hsla(0, 0%, 0%, 0.2);
+    }
+
+    ul {
+        list-style-type: none;
+
+        border-radius: 20px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    li {
+        background-color: hsla(0, 0%, 0%, 0.2);
+
+        padding: 1.5rem;
+        border-radius: 5px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    li:first-of-type {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    li:last-of-type {
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    li > .firstRow {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -247,54 +339,7 @@
         gap: 1rem;
     }
 
-    .firstRow > p {
-        font-size: 0.8rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .route {
-        display: flex;
-        flex-direction: column;
-
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
-    }
-    .route > span {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-items: flex-start;
-
-        width: 100%;
-        gap: 0.5rem;
-
-        margin-block: 0;
-    }
-
-    .route,
-    .special {
-        gap: 1rem;
-        width: 100%;
-    }
-
-    .special {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: space-evenly;
-    }
-
-    li > span,
-    li > p {
-        font-size: 1rem;
-        margin: 0;
-    }
-
-    .sizeIndicator {
+    li > .sizeIndicator {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
@@ -302,15 +347,49 @@
         margin-block: 1rem;
     }
 
-    .smallToBig {
+    li > .sizeIndicator > .smallToBig {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    li > .sizeIndicator > .smallToBig > p {
+        margin-block: 0;
+    }
+
+    li > .route {
+        display: flex;
+        flex-direction: column;
+
+        gap: 0.5rem;
+
+        margin-block: 0.5rem;
+    }
+
+    li > .route > span {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+
+    li > .special {
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: center;
-        gap: 0.5rem;
+        justify-content: space-evenly;
+        gap: 1rem;
+
+        margin-top: 0.5rem;
     }
-    .smallToBig > p {
-        margin-block: 0;
+
+    li > hr {
+        margin: 0.5rem 0;
+        width: 100%;
+        border: 1px solid var(--text-color);
+        opacity: var(--secondary-opacity);
+        border-radius: 100vmax;
     }
 
     .no {
@@ -330,44 +409,36 @@
         top: 0;
     }
 
-    #notFound {
-        display: flex;
-        justify-content: center;
-    }
-    #notFound > p {
-        display: inline;
-        margin-inline: 0;
-        margin-block: 2rem;
-        padding: 0;
+    /* LAYOUT */
+    @media only screen and (min-width: 1000px) {
+        main {
+            height: 100vh;
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+        }
+
+        #mapContainer {
+            display: inline-block;
+            height: 100%;
+        }
+
+        aside {
+            height: 100%;
+
+            overflow-y: scroll;
+        }
     }
 
     @media only screen and (max-width: 1000px) {
         main {
+            display: flex;
             flex-direction: column-reverse;
-            height: max-content;
         }
-        main > #mapContainer {
-            flex: 1;
-            aspect-ratio: 1/0.75;
-        }
-        main > ul,
-        #notFound {
-            flex: 1;
-            height: fit-content;
-        }
+        #mapContainer {
+            outline: 2px solid blue;
 
-        main > ul {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        }
-    }
-    @media only screen and (max-width: 500px) {
-        main > #mapContainer {
-            aspect-ratio: 1/1.125;
+            height: 50vh;
         }
     }
 </style>
