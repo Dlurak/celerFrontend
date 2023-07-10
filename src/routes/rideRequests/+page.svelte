@@ -15,6 +15,7 @@
     let time = new Date();
 
     let page = 1;
+    let limit = 2;
 
     const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
@@ -32,24 +33,16 @@
 
     let requestsGeoJSON: geoJSONrideRequests;
 
-    onMount(async () => {
-        document.title = "Celer - Ride Requests";
+    let rideRequestsResponse: Promise<any>;
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-            window.location.href = "/login";
-        }
+    let token: string;
 
-        const config = fetch("config.json", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        }).then((res) => {
-            return res.json();
-        });
+    let config: Promise<any>;
 
-        const url = (await config).apiUrl + "/rideRequest/all";
+    async function requestPage(config: any, token: string) {
+        const url = config.apiUrl + `/rideRequest?page=${page}&pageSize=${limit}`;
+
+        console.log("Config", config);
 
         const rideRequestsResponse = fetch(url, {
             method: "GET",
@@ -67,6 +60,28 @@
             }
             return res.json();
         });
+
+        return rideRequestsResponse;
+    }
+
+    onMount(async () => {
+        document.title = "Celer - Ride Requests";
+
+        token = localStorage.getItem("token") as string;
+        if (!token) {
+            window.location.href = "/login";
+        }
+
+        config = fetch("config.json", {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+        }).then((res) => {
+            return res.json();
+        });
+
+        rideRequestsResponse = requestPage(await config, token);
 
         const specialitiesIconsPromise = fetch("/data/specialitiesIcons.json", {
             headers: {
@@ -191,24 +206,30 @@
                     <button
                         class="bx bx-chevrons-left"
                         title="First pag"
-                        on:click={() => {
+                        on:click={async () => {
                             page = 1;
+                            rideRequestsResponse = requestPage(await config, token);
+                            requests = await rideRequestsResponse;
                         }}
                         disabled={page <= 1}
                     />
                     <button
                         class="bx bx-chevron-left"
                         title="Previous page"
-                        on:click={() => {
+                        on:click={async () => {
                             page -= 1;
+                            rideRequestsResponse = requestPage(await config, token);
+                            requests = await rideRequestsResponse;
                         }}
                         disabled={page <= 1}
                     />
                     <button
                         class="bx bx-chevron-right"
                         title="Next page"
-                        on:click={() => {
+                        on:click={async () => {
                             page += 1;
+                            rideRequestsResponse = requestPage(await config, token);
+                            requests = await rideRequestsResponse;
                         }}
                     />
                 </div>
