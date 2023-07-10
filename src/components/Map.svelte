@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { afterUpdate, onMount } from "svelte";
     import { browser } from "$app/environment";
-    import type L from "leaflet";
     import type { geoJSONrideRequests } from "../types/geoJSON";
 
-    // @ts-ignore
     let map: L.Map;
 
+    // export let data: geoJSONrideRequests; // this is first undefined and then the correct data due to the constructor of the SVELTE component
     export let data: geoJSONrideRequests;
 
     onMount(() => {
@@ -45,9 +44,13 @@
                     })
                 );
             });
-
-            L.geoJSON(data).addTo(map);
         }
+    });
+
+    afterUpdate(() => {
+        let L = window.L;
+
+        L.geoJSON(data).addTo(map);
     });
 </script>
 

@@ -436,8 +436,6 @@
             flex-direction: column-reverse;
         }
         #mapContainer {
-            outline: 2px solid blue;
-
             height: 50vh;
         }
     }
