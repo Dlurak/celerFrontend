@@ -265,7 +265,7 @@
         transition: background-color var(--animation);
     }
 
-    #pageNumberButtonsContainer > button:hover,
+    #pageNumberButtonsContainer > button:hover:not(:disabled),
     #pageNumberButtonsContainer > button:active,
     #pageNumberButtonsContainer > button:focus {
         background-color: hsla(0, 0%, 0%, 0.4);
@@ -278,7 +278,7 @@
     #pageNumberButtonsContainer > button:disabled {
         cursor: not-allowed;
 
-        filter: contrast(0.5);
+        opacity: 0.5;
     }
 
     #pageNumberButtonsContainer > button:first-of-type {
@@ -430,6 +430,12 @@
         }
     }
 
+    @media only screen and (max-width: 1400px) {
+        main {
+            grid-template-columns: 2fr 3fr;
+        }
+    }
+
     @media only screen and (max-width: 1000px) {
         main {
             display: flex;
@@ -437,6 +443,12 @@
         }
         #mapContainer {
             height: 50vh;
+        }
+
+        ul {
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
     }
 </style>

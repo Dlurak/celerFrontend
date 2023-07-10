@@ -2,10 +2,10 @@
     import { afterUpdate, onMount } from "svelte";
     import { browser } from "$app/environment";
     import type { geoJSONrideRequests } from "../types/geoJSON";
+    import Layout from "../routes/+layout.svelte";
 
     let map: L.Map;
 
-    // export let data: geoJSONrideRequests; // this is first undefined and then the correct data due to the constructor of the SVELTE component
     export let data: geoJSONrideRequests;
 
     onMount(() => {
@@ -50,7 +50,13 @@
     afterUpdate(() => {
         let L = window.L;
 
-        L.geoJSON(data).addTo(map);
+        const geoJSON = L.geoJSON(data);
+
+        geoJSON.bindPopup((layer) => {
+            console.log(layer);
+            return JSON.stringify(layer);
+        });
+        geoJSON.addTo(map);
     });
 </script>
 
