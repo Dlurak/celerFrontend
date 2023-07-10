@@ -1,19 +1,33 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
+    import type L from "leaflet";
 
-    let map;
+    // @ts-ignore
+    let map: L.Map;
 
     onMount(() => {
         if (browser) {
-            // @ts-ignore
             let L = window.L;
 
-            map = L.map("map").setView([51.505, -0.09], 14);
+            const mapStart = JSON.parse(localStorage.getItem("mapStart") || "{}");
+
+            map = L.map("map").setView([mapStart.lat, mapStart.lng], mapStart.zoom);
             L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             }).addTo(map);
+
+            map.on("moveend", () => {
+                localStorage.setItem(
+                    "mapStart",
+                    JSON.stringify({
+                        lat: map.getCenter().lat,
+                        lng: map.getCenter().lng,
+                        zoom: map.getZoom(),
+                    })
+                );
+            });
         }
     });
 </script>
