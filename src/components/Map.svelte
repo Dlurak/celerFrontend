@@ -7,6 +7,8 @@
 
     export let data: geoJSONrideRequests;
 
+    let layeroObj: { [key: string]: L.Layer } = {};
+
     onMount(() => {
         // basic leaflet setup
         if (browser) {
@@ -49,8 +51,15 @@
     afterUpdate(() => {
         let L = window.L;
 
+        // check if layerObj has a geoJSON layer/key
+        if (layeroObj.geoJSON) {
+            layeroObj.geoJSON.remove();
+        }
+
         const geoJSON = L.geoJSON(data);
         geoJSON.addTo(map);
+
+        layeroObj.geoJSON = geoJSON;
     });
 </script>
 

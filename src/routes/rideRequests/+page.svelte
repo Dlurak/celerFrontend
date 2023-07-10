@@ -17,6 +17,15 @@
     let page = 1;
     let limit = 2;
 
+    let requests: any[] = [];
+
+    let requestsGeoJSON: geoJSONrideRequests;
+
+    let rideRequestsResponse: Promise<any>;
+
+    let token: string;
+
+    let config: Promise<any>;
     const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
         for (const group of Object.keys(groups)) {
@@ -29,20 +38,8 @@
         return amount;
     };
 
-    let requests: any[] = [];
-
-    let requestsGeoJSON: geoJSONrideRequests;
-
-    let rideRequestsResponse: Promise<any>;
-
-    let token: string;
-
-    let config: Promise<any>;
-
     async function requestPage(config: any, token: string) {
         const url = config.apiUrl + `/rideRequest?page=${page}&pageSize=${limit}`;
-
-        console.log("Config", config);
 
         const rideRequestsResponse = fetch(url, {
             method: "GET",
@@ -62,6 +59,30 @@
         });
 
         return rideRequestsResponse;
+    }
+
+    function createGeoJSON() {
+        const requestsGeoJSONBuild: geoJSONrideRequests = {
+            type: "FeatureCollection",
+            features: [],
+        };
+
+        for (const request of requests) {
+            requestsGeoJSONBuild.features.push({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: request.startLocation.reverse(),
+                },
+                properties: {
+                    id: request._id,
+                    volume: request.cargoVolume,
+                    weight: request.cargoWeight,
+                },
+            });
+        }
+
+        return requestsGeoJSONBuild;
     }
 
     onMount(async () => {
@@ -106,25 +127,7 @@
         volumeGroups = (await groups).volumeGroup;
         requests = await rideRequestsResponse; // TODO: add error handling // TODO: add use promise.all
 
-        requestsGeoJSON = {
-            type: "FeatureCollection",
-            features: [],
-        };
-
-        for (const request of requests) {
-            requestsGeoJSON.features.push({
-                type: "Feature",
-                geometry: {
-                    type: "Point",
-                    coordinates: request.startLocation.reverse(),
-                },
-                properties: {
-                    id: request._id,
-                    volume: request.cargoVolume,
-                    weight: request.cargoWeight,
-                },
-            });
-        }
+        requestsGeoJSON = createGeoJSON();
 
         setInterval(() => {
             time = new Date();
@@ -210,6 +213,7 @@
                             page = 1;
                             rideRequestsResponse = requestPage(await config, token);
                             requests = await rideRequestsResponse;
+                            requestsGeoJSON = createGeoJSON();
                         }}
                         disabled={page <= 1}
                     />
@@ -220,6 +224,7 @@
                             page -= 1;
                             rideRequestsResponse = requestPage(await config, token);
                             requests = await rideRequestsResponse;
+                            requestsGeoJSON = createGeoJSON();
                         }}
                         disabled={page <= 1}
                     />
@@ -230,6 +235,7 @@
                             page += 1;
                             rideRequestsResponse = requestPage(await config, token);
                             requests = await rideRequestsResponse;
+                            requestsGeoJSON = createGeoJSON();
                         }}
                     />
                 </div>
