@@ -8,7 +8,7 @@
     let usernameValue = "";
     let buttonHint = "Please fill in all fields";
 
-    let responseTextUser = '';
+    let responseTextUser = "";
 
     $: isButtonDisabled = !(passwordValue && usernameValue); // disable button if any of the fields are empty
     $: buttonHint = isButtonDisabled ? "Please fill in all fields" : "Login"; // change button hint depending on whether the button is disabled or not
@@ -34,7 +34,7 @@
                 "Content-Type": "application/json",
                 Accept: "application/json",
             },
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
         });
 
         const responseJson = await response.json();
@@ -44,13 +44,13 @@
                 responseTextUser = `Welcome back ${responseJson.username}! (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧`;
                 localStorage.setItem("token", responseJson.token);
                 localStorage.setItem("username", responseJson.username);
-                
+
                 break;
             case 401:
-                responseTextUser = 'Incorrect password or username ヽ(ಠ_ಠ)ノ';
+                responseTextUser = "Incorrect password or username ヽ(ಠ_ಠ)ノ";
                 break;
             default:
-                responseTextUser = 'Something went wrong (╯°□°）╯彡┻━┻';
+                responseTextUser = "Something went wrong (╯°□°）╯彡┻━┻";
                 break;
         }
     }
@@ -65,14 +65,10 @@
         <h3>Login now</h3>
         <p>{responseTextUser}</p>
 
+        <LoginInput type="text" bind:value={usernameValue} />
+        <LoginInput type="password" bind:value={passwordValue} />
 
-        <LoginInput type="text" bind:value={usernameValue}/>
-        <LoginInput type="password" bind:value={passwordValue}/>
-
-        <SubmitButton disabled={isButtonDisabled} title={buttonHint} onClick={login}>
-            Login
-        </SubmitButton>
-
+        <SubmitButton disabled={isButtonDisabled} title={buttonHint} onClick={login}>Login</SubmitButton>
 
         <p>
             Don't have an account? <a href="/register">Register</a>
@@ -98,7 +94,7 @@
         justify-content: center;
         align-items: center;
 
-        background-color: hsla(0, 0%, 0%, 0.2);
+        background-color: var(--background-color-transparent);
 
         border-radius: 10px;
 
@@ -119,5 +115,4 @@
     p:empty {
         display: none;
     }
-
 </style>

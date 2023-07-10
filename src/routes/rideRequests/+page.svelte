@@ -247,7 +247,7 @@
     }
 
     #pageNumberButtonsContainer > button {
-        background-color: hsla(0, 0%, 0%, 0.2);
+        background-color: var(--background-color-transparent);
 
         color: var(--text-color);
 
@@ -296,7 +296,7 @@
         padding: 1rem;
         margin: 0.5rem;
 
-        background-color: hsla(0, 0%, 0%, 0.2);
+        background-color: var(--background-color-transparent);
     }
 
     ul {
@@ -310,7 +310,7 @@
     }
 
     li {
-        background-color: hsla(0, 0%, 0%, 0.2);
+        background-color: var(--background-color-transparent);
 
         padding: 1.5rem;
         border-radius: 5px;

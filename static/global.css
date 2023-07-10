@@ -31,6 +31,8 @@ body {
         --text-color: white;
         --submit-button-background-color: darkgreen;
         --link-color: #0c88f7;
+
+        --background-color-transparent: hsla(0, 0%, 0%, 0.2);
     }
 
     body {
@@ -44,6 +46,8 @@ body {
         --text-color: black;
         --submit-button-background-color: green;
         --link-color: #0000ee;
+
+        --background-color-transparent: hsla(0, 0%, 0%, 0.1);
     }
 
     body {
