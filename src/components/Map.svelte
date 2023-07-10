@@ -10,9 +10,22 @@
         if (browser) {
             let L = window.L;
 
-            const mapStart = JSON.parse(localStorage.getItem("mapStart") || "{}");
+            type MapStart = {
+                lat: number;
+                lng: number;
+                zoom: number;
+            };
 
-            map = L.map("map").setView([mapStart.lat, mapStart.lng], mapStart.zoom);
+            const mapStart: MapStart = JSON.parse(localStorage.getItem("mapStart") || "{}");
+
+            map = L.map("map");
+
+            if (Object.keys(mapStart).length > 0) {
+                map.setView([mapStart.lat, mapStart.lng], mapStart.zoom);
+            } else {
+                map.locate({ setView: true, maxZoom: 16 });
+            }
+
             L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
