@@ -2,11 +2,15 @@
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
     import type L from "leaflet";
+    import type { geoJSONrideRequests } from "../types/geoJSON";
 
     // @ts-ignore
     let map: L.Map;
 
+    export let data: geoJSONrideRequests;
+
     onMount(() => {
+        // basic leaflet setup
         if (browser) {
             let L = window.L;
 
@@ -41,6 +45,8 @@
                     })
                 );
             });
+
+            L.geoJSON(data).addTo(map);
         }
     });
 </script>

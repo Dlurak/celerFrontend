@@ -217,7 +217,7 @@
     </aside>
 
     <div id="mapContainer">
-        <Map />
+        <Map data={requestsGeoJSON} />
     </div>
 </main>
 
