@@ -6,6 +6,7 @@
     import { formatSeconds } from "../../utils/formatTimeFromStamp";
     import RouteLength from "../../components/routeLength.svelte";
     import Map from "../../components/Map.svelte";
+    import SubmitButton from "../../components/submitButton.svelte";
 
     let weigthGroups: groupsType;
     let volumeGroups: groupsType;
@@ -28,6 +29,15 @@
     let token: string;
 
     let config: Promise<any>;
+
+    let speciaitiesState: {
+        [key: string]: boolean;
+    } = {
+        wine: false,
+        hot: false,
+        bomb: false,
+        dog: false,
+    };
 
     const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
@@ -157,6 +167,61 @@
         {:else}
             <div id="sidePanell">
                 <ul>
+                    <li id="postItem">
+                        <span class="firstRow">
+                            <h3 contenteditable="true">Title</h3>
+                        </span>
+                        <p contenteditable="true">Description</p>
+                        <hr />
+                        <span class="sizeIndicator">
+                            <span class="smallToBig">
+                                <p contenteditable="false">
+                                    <span contenteditable="true">Weight</span>
+                                    <span contenteditable="false">KG</span>
+                                </p>
+                            </span>
+                            <span class="smallToBig">
+                                <p contenteditable="false">
+                                    <span contenteditable="true">Volume</span>
+                                    <span contenteditable="false">Liters</span>
+                                </p>
+                            </span>
+                        </span>
+
+                        <hr />
+
+                        <div class="route" contenteditable="false">
+                            <span>
+                                <i class="bx bxs-map" />
+                                <p>Not implemented yet stay tuned</p>
+                            </span>
+                            <span>
+                                <i class="bx bx-trip" />
+                                <p>Not implemented yet stay tuned</p>
+                            </span>
+                            <span>
+                                <i class="bx bx-map" />
+                                <p>Not implemented yet stay tuned</p>
+                            </span>
+                        </div>
+
+                        <hr />
+
+                        <span class="special" contenteditable="false">
+                            {#each Object.keys(specialitiesIcons) as iconName}
+                                <button
+                                    class={`bx bxs-${iconName}`}
+                                    class:no={speciaitiesState[iconName]}
+                                    on:click={() => {
+                                        speciaitiesState[iconName] = !speciaitiesState[iconName];
+                                    }}
+                                />
+                            {/each}
+                        </span>
+
+                        <SubmitButton disabled={false} title="Serafin er stinkt" onClick={() => {}}>Submit</SubmitButton>
+                    </li>
+
                     {#each requests as req}
                         <li>
                             <span class="firstRow">
@@ -515,6 +580,10 @@
         flex-direction: column;
     }
 
+    #postItem {
+        grid-column: span 2;
+    }
+
     li:first-of-type {
         border-top-left-radius: 15px;
         border-top-right-radius: 15px;
@@ -566,7 +635,8 @@
         flex-direction: row;
         flex-wrap: nowrap;
         gap: 0.5rem;
-        align-items: flex-start;
+        align-items: center;
+        justify-content: flex-start;
     }
 
     li > .special {
@@ -578,6 +648,18 @@
         gap: 1rem;
 
         margin-top: 0.5rem;
+    }
+
+    .special > .bx {
+        background-color: transparent;
+        border-color: transparent;
+        border-style: solid;
+        border-radius: 4px;
+        color: var(--text-color);
+        font-size: 1rem;
+
+        padding: 0;
+        margin: 0;
     }
 
     li > hr {
