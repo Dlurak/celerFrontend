@@ -169,20 +169,24 @@
                 <ul>
                     <li id="postItem">
                         <span class="firstRow">
-                            <h3 contenteditable="true">Title</h3>
+                            <h3>
+                                <input type="text" placeholder="TV" />
+                            </h3>
                         </span>
-                        <p contenteditable="true">Description</p>
+                        <p>
+                            <input type="text" placeholder="It's a 65 inch TV" />
+                        </p>
                         <hr />
                         <span class="sizeIndicator">
                             <span class="smallToBig">
                                 <p contenteditable="false">
-                                    <span contenteditable="true">Weight</span>
+                                    <input type="number" inputmode="numeric" placeholder="12" />
                                     <span contenteditable="false">KG</span>
                                 </p>
                             </span>
                             <span class="smallToBig">
                                 <p contenteditable="false">
-                                    <span contenteditable="true">Volume</span>
+                                    <input type="number" inputmode="numeric" placeholder="40" />
                                     <span contenteditable="false">Liters</span>
                                 </p>
                             </span>
@@ -685,6 +689,49 @@
         position: absolute;
         left: 0;
         top: 0;
+    }
+
+    h3 > input {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    p > input {
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    :is(h3, p) > input {
+        background-color: transparent;
+        border-color: transparent;
+        border-style: solid;
+
+        margin: 0;
+        padding: 0;
+
+        color: var(--text-color);
+    }
+
+    :is(p, h3):has(> input) {
+        position: relative;
+        padding-bottom: 2px;
+    }
+    :is(p, h3):has(> input)::after {
+        content: "";
+        width: 0;
+        height: 2px;
+        background-color: var(--text-color);
+        position: absolute;
+        left: 0;
+        bottom: 0;
+
+        transition: width var(--animation);
+    }
+    :is(p, h3):has(> input:is(:focus, :not(:placeholder-shown)))::after {
+        width: 100%;
+    }
+    :is(p, h3) > input:focus {
+        outline: none;
     }
 
     /* LAYOUT */
