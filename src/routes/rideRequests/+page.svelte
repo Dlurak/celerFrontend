@@ -16,6 +16,7 @@
 
     let page = 1;
     let limit = 2;
+    let pageCount: number;
 
     let requests: any[] = [];
 
@@ -26,6 +27,7 @@
     let token: string;
 
     let config: Promise<any>;
+
     const getAmountOfIcons = (value: number, groups: groupsType) => {
         let amount = 0;
         for (const group of Object.keys(groups)) {
@@ -36,6 +38,14 @@
             }
         }
         return amount;
+    };
+
+    const handelPageChangeClick = async (newCount: number) => {
+        page = newCount;
+        rideRequestsResponse = requestPage(await config, token);
+        requests = (await rideRequestsResponse).data;
+        pageCount = (await rideRequestsResponse).pageCount;
+        requestsGeoJSON = createGeoJSON();
     };
 
     async function requestPage(config: any, token: string) {
@@ -125,7 +135,8 @@
         specialitiesIcons = await specialitiesIconsPromise;
         weigthGroups = (await groups).weigthGroup;
         volumeGroups = (await groups).volumeGroup;
-        requests = await rideRequestsResponse; // TODO: add error handling // TODO: add use promise.all
+        requests = (await rideRequestsResponse).data; // TODO: add error handling // TODO: add use promise.all
+        pageCount = (await rideRequestsResponse).pageCount;
 
         requestsGeoJSON = createGeoJSON();
 
@@ -206,38 +217,40 @@
                     {/each}
                 </ul>
                 <div id="pageNumberButtonsContainer">
-                    <button
-                        class="bx bx-chevrons-left"
-                        title="First pag"
-                        on:click={async () => {
-                            page = 1;
-                            rideRequestsResponse = requestPage(await config, token);
-                            requests = await rideRequestsResponse;
-                            requestsGeoJSON = createGeoJSON();
-                        }}
-                        disabled={page <= 1}
-                    />
-                    <button
-                        class="bx bx-chevron-left"
-                        title="Previous page"
-                        on:click={async () => {
-                            page -= 1;
-                            rideRequestsResponse = requestPage(await config, token);
-                            requests = await rideRequestsResponse;
-                            requestsGeoJSON = createGeoJSON();
-                        }}
-                        disabled={page <= 1}
-                    />
-                    <button
-                        class="bx bx-chevron-right"
-                        title="Next page"
-                        on:click={async () => {
-                            page += 1;
-                            rideRequestsResponse = requestPage(await config, token);
-                            requests = await rideRequestsResponse;
-                            requestsGeoJSON = createGeoJSON();
-                        }}
-                    />
+                    <span>
+                        <button
+                            title="Previous page"
+                            on:click={() => {
+                                handelPageChangeClick(page - 1);
+                            }}
+                            class="bx bx-chevron-left"
+                            disabled={page <= 1}
+                        />
+                        <button
+                            title="Nextpage"
+                            on:click={() => {
+                                handelPageChangeClick(page + 1);
+                            }}
+                            class="bx bx-chevron-right"
+                            disabled={page >= pageCount}
+                        />
+                        <button
+                            title="First page"
+                            on:click={() => {
+                                handelPageChangeClick(1);
+                            }}
+                            class="bx bx-chevrons-left"
+                            disabled={page <= 1}
+                        />
+                        <button
+                            title="Last page"
+                            on:click={() => {
+                                handelPageChangeClick(pageCount);
+                            }}
+                            class="bx bx-chevrons-right"
+                            disabled={page >= pageCount}
+                        />
+                    </span>
                 </div>
             </div>
         {/if}
@@ -264,58 +277,56 @@
     }
 
     #pageNumberButtonsContainer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.5rem;
-        flex-direction: row;
-
         border-radius: 15px;
     }
 
-    #pageNumberButtonsContainer > button {
-        background-color: var(--background-color-transparent);
+    #pageNumberButtonsContainer > span {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
 
+        gap: 0.1rem;
+    }
+
+    #pageNumberButtonsContainer > span > button {
+        background-color: var(--background-color-transparent);
         color: var(--text-color);
 
         font-size: 1.5rem;
 
-        width: 30%;
-
         padding: 1rem;
 
-        border-radius: 2px;
+        border-radius: 5px;
         border-color: transparent;
         border-style: solid;
-
-        cursor: pointer;
-        transition: background-color var(--animation);
     }
 
-    #pageNumberButtonsContainer > button:hover:not(:disabled),
-    #pageNumberButtonsContainer > button:active,
-    #pageNumberButtonsContainer > button:focus {
+    #pageNumberButtonsContainer > span > button:nth-child(1) {
+        border-top-left-radius: 10px;
+    }
+    #pageNumberButtonsContainer > span > button:nth-child(2) {
+        border-top-right-radius: 10px;
+    }
+    #pageNumberButtonsContainer > span > button:nth-child(3) {
+        border-bottom-left-radius: 10px;
+    }
+    #pageNumberButtonsContainer > span > button:nth-child(4) {
+        border-bottom-right-radius: 10px;
+    }
+
+    #pageNumberButtonsContainer > span > button:hover:not(:disabled),
+    #pageNumberButtonsContainer > span > button:active,
+    #pageNumberButtonsContainer > span > button:focus {
         background-color: hsla(0, 0%, 0%, 0.4);
     }
 
-    #pageNumberButtonsContainer > button:focus {
+    #pageNumberButtonsContainer > span > button:focus {
         outline: 1px solid var(--text-color);
     }
 
-    #pageNumberButtonsContainer > button:disabled {
+    #pageNumberButtonsContainer > span > button:disabled {
         cursor: not-allowed;
 
         opacity: 0.5;
-    }
-
-    #pageNumberButtonsContainer > button:first-of-type {
-        border-top-left-radius: 15px;
-        border-bottom-left-radius: 15px;
-    }
-
-    #pageNumberButtonsContainer > button:last-of-type {
-        border-top-right-radius: 15px;
-        border-bottom-right-radius: 15px;
     }
 
     #pageNumberButtonsContainer,
