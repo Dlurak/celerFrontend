@@ -17,6 +17,7 @@
     let page = 1;
     let limit = 2;
     let pageCount: number;
+    let pageInputValue = 1;
 
     let requests: any[] = [];
 
@@ -42,6 +43,7 @@
 
     const handelPageChangeClick = async (newCount: number) => {
         page = newCount;
+        pageInputValue = newCount;
         rideRequestsResponse = requestPage(await config, token);
         requests = (await rideRequestsResponse).data;
         pageCount = (await rideRequestsResponse).pageCount;
@@ -218,7 +220,21 @@
                 </ul>
                 <div id="pageNumberButtonsContainer">
                     <span class="rangeContainer">
-                        <input type="number" bind:value={page} inputmode="numeric" />
+                        <input
+                            type="number"
+                            bind:value={pageInputValue}
+                            inputmode="numeric"
+                            on:input={() => {
+                                if (pageInputValue <= 0 || pageInputValue > pageCount || [NaN, null].includes(pageInputValue)) {
+                                    return;
+                                }
+                                page = pageInputValue;
+                                handelPageChangeClick(page);
+                            }}
+                            on:blur={() => {
+                                handelPageChangeClick(page);
+                            }}
+                        />
                         <div class="range">
                             <input
                                 type="range"
@@ -226,6 +242,7 @@
                                 max={pageCount}
                                 bind:value={page}
                                 on:input={() => {
+                                    pageInputValue = page;
                                     handelPageChangeClick(page);
                                 }}
                             />
