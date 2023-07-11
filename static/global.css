@@ -33,6 +33,9 @@ body {
         --link-color: #0c88f7;
 
         --background-color-transparent: hsla(0, 0%, 0%, 0.2);
+
+        --accent-color: hsl(153, 87%, 69%);
+        --accent-color-interaction: hsl(153, 87%, 79%);
     }
 
     body {
@@ -48,6 +51,9 @@ body {
         --link-color: #0000ee;
 
         --background-color-transparent: hsla(0, 0%, 0%, 0.1);
+
+        --accent-color: hsl(153, 34%, 49%);
+        --accent-color-interaction: hsl(153, 34%, 59%);
     }
 
     body {

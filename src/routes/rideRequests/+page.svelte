@@ -217,7 +217,22 @@
                     {/each}
                 </ul>
                 <div id="pageNumberButtonsContainer">
-                    <span>
+                    <span class="rangeContainer">
+                        <input type="number" bind:value={page} inputmode="numeric" />
+                        <div class="range">
+                            <input
+                                type="range"
+                                min="1"
+                                max={pageCount}
+                                bind:value={page}
+                                on:input={() => {
+                                    handelPageChangeClick(page);
+                                }}
+                            />
+                        </div>
+                        <p>of {pageCount}</p>
+                    </span>
+                    <span class="buttonContainer">
                         <button
                             title="Previous page"
                             on:click={() => {
@@ -277,17 +292,23 @@
     }
 
     #pageNumberButtonsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        align-items: stretch;
+
         border-radius: 15px;
     }
 
-    #pageNumberButtonsContainer > span {
+    #pageNumberButtonsContainer > .buttonContainer {
         display: grid;
         grid-template-columns: 1fr 1fr;
 
         gap: 0.1rem;
     }
 
-    #pageNumberButtonsContainer > span > button {
+    #pageNumberButtonsContainer > .buttonContainer > button {
         background-color: var(--background-color-transparent);
         color: var(--text-color);
 
@@ -298,35 +319,155 @@
         border-radius: 5px;
         border-color: transparent;
         border-style: solid;
+
+        cursor: pointer;
     }
 
-    #pageNumberButtonsContainer > span > button:nth-child(1) {
+    #pageNumberButtonsContainer > .buttonContainer > button:nth-child(1) {
         border-top-left-radius: 10px;
     }
-    #pageNumberButtonsContainer > span > button:nth-child(2) {
+    #pageNumberButtonsContainer > .buttonContainer > button:nth-child(2) {
         border-top-right-radius: 10px;
     }
-    #pageNumberButtonsContainer > span > button:nth-child(3) {
+    #pageNumberButtonsContainer > .buttonContainer > button:nth-child(3) {
         border-bottom-left-radius: 10px;
     }
-    #pageNumberButtonsContainer > span > button:nth-child(4) {
+    #pageNumberButtonsContainer > .buttonContainer > button:nth-child(4) {
         border-bottom-right-radius: 10px;
     }
 
-    #pageNumberButtonsContainer > span > button:hover:not(:disabled),
-    #pageNumberButtonsContainer > span > button:active,
-    #pageNumberButtonsContainer > span > button:focus {
+    #pageNumberButtonsContainer > .buttonContainer > button:hover:not(:disabled),
+    #pageNumberButtonsContainer > .buttonContainer > button:active,
+    #pageNumberButtonsContainer > .buttonContainer > button:focus {
         background-color: hsla(0, 0%, 0%, 0.4);
     }
 
-    #pageNumberButtonsContainer > span > button:focus {
+    #pageNumberButtonsContainer > .buttonContainer > button:focus-visible {
         outline: 1px solid var(--text-color);
     }
 
-    #pageNumberButtonsContainer > span > button:disabled {
+    #pageNumberButtonsContainer > .buttonContainer > button:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    #pageNumberButtonsContainer > .buttonContainer > button:disabled {
         cursor: not-allowed;
 
         opacity: 0.5;
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > input[type="number"] {
+        width: 3rem;
+        text-align: center;
+
+        border-radius: 5px;
+        border-color: transparent;
+        border-style: solid;
+
+        font-size: inherit;
+        font-family: inherit;
+
+        background-color: transparent;
+
+        -moz-appearance: textfield;
+        appearance: textfield;
+
+        color: var(--text-color);
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > input[type="number"]::-webkit-inner-spin-button,
+    #pageNumberButtonsContainer > .rangeContainer > input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > .range {
+        width: 100%;
+        height: 1rem;
+
+        margin: 0;
+        padding: 0;
+
+        border-radius: 5px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > .range:has(:focus-visible) {
+        outline: 1px solid var(--text-color);
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > .range > input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+
+        width: 100%;
+        height: 25%;
+
+        background: var(--text-color);
+
+        opacity: var(--secondary-opacity);
+
+        border-radius: 100vmax;
+
+        outline: none;
+
+        transition: all var(--animation);
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > .range > input[type="range"]:is(:hover, :focus, :active) {
+        opacity: 1;
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > .range > input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+
+        width: 1rem;
+        aspect-ratio: 1;
+
+        background-color: var(--accent-color);
+
+        border-radius: 100vmax;
+        border-top-left-radius: 0;
+        border-color: transparent;
+        border-style: solid;
+
+        outline: none;
+
+        cursor: pointer;
+    }
+    #pageNumberButtonsContainer > .rangeContainer > .range > input[type="range"]::-moz-range-thumb {
+        width: 1rem;
+        aspect-ratio: 1;
+
+        background-color: var(--accent-color);
+
+        border-radius: 100vmax;
+        border-top-left-radius: 0;
+        border-color: transparent;
+        border-style: solid;
+
+        outline: none;
+
+        cursor: pointer;
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > .range > input[type="range"]::-webkit-slider-thumb:is(:hover, :focus, :active) {
+        background-color: var(--accent-color-interaction);
+    }
+
+    #pageNumberButtonsContainer > .rangeContainer > p {
+        width: 3rem;
     }
 
     #pageNumberButtonsContainer,
