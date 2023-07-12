@@ -29,6 +29,12 @@
             "path": "/login",
             "showInNav": true,
             "showInFooter": true
+        },
+        {
+            "title": "Register",
+            "path": "/register",
+            "showInNav": false,
+            "showInFooter": true
         }
     ]
 }
