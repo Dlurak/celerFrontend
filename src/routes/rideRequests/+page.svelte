@@ -6,6 +6,7 @@
     import { formatSeconds } from "../../utils/formatTimeFromStamp";
     import RouteLength from "../../components/routeLength.svelte";
     import Map from "../../components/Map.svelte";
+    import RideRequestListItem from "../../components/RideRequestListItem.svelte";
 
     let weigthGroups: groupsType;
     let volumeGroups: groupsType;
@@ -159,62 +160,16 @@
                 <ul>
                     {#each requests as req}
                         <li>
-                            <span class="firstRow">
-                                <h3>{req.title}</h3>
-                                {#key time}
-                                    <p>{formatSeconds(Math.floor((Date.now() - req.createdAt) / 1000))} ago</p>
-                                {/key}
-                            </span>
-                            <p>{req.cargoDescription}</p>
-
-                            <hr />
-
-                            <span class="sizeIndicator">
-                                <span class="smallToBig">
-                                    {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, weigthGroups) }, (_, i) => i++) as i}
-                                        <i class="bx bx-dumbbell" />
-                                    {/each}
-                                    <p>{JSON.stringify(req.cargoWeight)} KG</p>
-                                </span>
-
-                                <span class="smallToBig">
-                                    {#each Array.from({ length: getAmountOfIcons(req.cargoWeight, volumeGroups) }, (_, i) => i++) as i}
-                                        <i class="bx bxs-cube" />
-                                    {/each}
-                                    <p>{JSON.stringify(req.cargoVolume)} Liters</p>
-                                </span>
-                            </span>
-
-                            <hr />
-
-                            <span class="route">
-                                <span>
-                                    <i class="bx bxs-map" />
-                                    <AddressLabel lat={req.startLocation[1]} lng={req.startLocation[0]} />
-                                </span>
-                                <span>
-                                    <i class="bx bx-trip" />
-                                    <RouteLength startLocation={[req.startLocation[1], req.startLocation[0]]} destinationLocation={[req.destinationLocation[1], req.destinationLocation[0]]} />
-                                </span>
-                                <span>
-                                    <i class="bx bxs-map" />
-                                    <AddressLabel lat={req.destinationLocation[0]} lng={req.destinationLocation[1]} />
-                                </span>
-                            </span>
-
-                            <hr />
-
-                            <span class="special">
-                                {#each Object.keys(specialitiesIcons) as iconName}
-                                    <!-- TODO: Make this safe with #await -->
-
-                                    {#if req.cargoSpecialCharacteristics.includes(specialitiesIcons[iconName])}
-                                        <i class={`bx bxs-${iconName}`} title={specialitiesIcons[iconName]} />
-                                    {:else}
-                                        <i class={`bx bxs-${iconName} no`} title={`Not ${specialitiesIcons[iconName]}`} />
-                                    {/if}
-                                {/each}
-                            </span>
+                            <RideRequestListItem
+                                title={req.title}
+                                createdAt={req.createdAt}
+                                description={req.cargoDescription}
+                                cargoWeight={req.cargoWeight}
+                                cargoVolume={req.cargoVolume}
+                                startLocation={req.startLocation}
+                                destinationLocation={req.destinationLocation}
+                                specialities={req.cargoSpecialCharacteristics}
+                            />
                         </li>
                     {/each}
                 </ul>
@@ -508,11 +463,7 @@
     li {
         background-color: var(--background-color-transparent);
 
-        padding: 1.5rem;
         border-radius: 5px;
-
-        display: flex;
-        flex-direction: column;
     }
 
     li:first-of-type {
@@ -523,86 +474,6 @@
     li:last-of-type {
         border-bottom-left-radius: 15px;
         border-bottom-right-radius: 15px;
-    }
-
-    li > .firstRow {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        align-items: center;
-
-        gap: 1rem;
-    }
-
-    li > .sizeIndicator {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-
-        margin-block: 1rem;
-    }
-
-    li > .sizeIndicator > .smallToBig {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    li > .sizeIndicator > .smallToBig > p {
-        margin-block: 0;
-    }
-
-    li > .route {
-        display: flex;
-        flex-direction: column;
-
-        gap: 0.5rem;
-
-        margin-block: 0.5rem;
-    }
-
-    li > .route > span {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        gap: 0.5rem;
-        align-items: flex-start;
-    }
-
-    li > .special {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-items: center;
-        justify-content: space-evenly;
-        gap: 1rem;
-
-        margin-top: 0.5rem;
-    }
-
-    li > hr {
-        margin: 0.5rem 0;
-        width: 100%;
-        border: 1px solid var(--text-color);
-        opacity: var(--secondary-opacity);
-        border-radius: 100vmax;
-    }
-
-    .no {
-        position: relative;
-    }
-
-    .no::after {
-        content: "";
-        width: 114%;
-        height: 4px;
-        border-radius: 100vmax;
-        rotate: 45deg;
-        transform-origin: top left;
-        background-color: red;
-        position: absolute;
-        left: 0;
-        top: 0;
     }
 
     /* LAYOUT */
