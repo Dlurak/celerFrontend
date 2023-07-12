@@ -1,19 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import type { groupsType } from "../../types/groupsType";
-    import AddressLabel from "../../components/addressLabel.svelte";
     import type { geoJSONrideRequests } from "../../types/geoJSON";
-    import { formatSeconds } from "../../utils/formatTimeFromStamp";
-    import RouteLength from "../../components/routeLength.svelte";
     import Map from "../../components/Map.svelte";
     import RideRequestListItem from "../../components/RideRequestListItem.svelte";
-
-    let weigthGroups: groupsType;
-    let volumeGroups: groupsType;
-
-    let specialitiesIcons: { [key: string]: string };
-
-    let time = new Date();
+    import { requestOwnData } from "../../utils/requestOwnData";
 
     let page = 1;
     let limit = 2;
@@ -29,18 +19,6 @@
     let token: string;
 
     let config: Promise<any>;
-
-    const getAmountOfIcons = (value: number, groups: groupsType) => {
-        let amount = 0;
-        for (const group of Object.keys(groups)) {
-            amount++;
-            const groupObj = groups[group];
-            if (value >= groupObj.min && value < groupObj.max) {
-                break;
-            }
-        }
-        return amount;
-    };
 
     const handelPageChangeClick = async (newCount: number) => {
         page = newCount;
@@ -106,46 +84,14 @@
             window.location.href = "/login";
         }
 
-        config = fetch("config.json", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        }).then((res) => {
-            return res.json();
-        });
+        config = requestOwnData("config");
 
         rideRequestsResponse = requestPage(await config, token);
 
-        const specialitiesIconsPromise = fetch("/data/specialitiesIcons.json", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        }).then((res) => {
-            return res.json();
-        });
-
-        const groups = fetch("/data/groups.json", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        }).then((res) => {
-            return res.json();
-        });
-
-        specialitiesIcons = await specialitiesIconsPromise;
-        weigthGroups = (await groups).weigthGroup;
-        volumeGroups = (await groups).volumeGroup;
         requests = (await rideRequestsResponse).data; // TODO: add error handling // TODO: add use promise.all
         pageCount = (await rideRequestsResponse).pageCount;
 
         requestsGeoJSON = createGeoJSON();
-
-        setInterval(() => {
-            time = new Date();
-        }, 1000);
     });
 </script>
 

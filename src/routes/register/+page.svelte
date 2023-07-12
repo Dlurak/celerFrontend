@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import LoginInput from "../../components/loginInput.svelte";
     import SubmitButton from "../../components/submitButton.svelte";
+    import { requestOwnData } from "../../utils/requestOwnData";
 
     const passwordStrengthColors = ["red", "orangered", "yellow", "yellowgreen", "green", "lime"];
     const validations = [
@@ -86,13 +87,7 @@
     }
 
     async function register() {
-        const configResponse = await fetch("config.json", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        });
-        const config = await configResponse.json();
+        const config = await requestOwnData("config");
 
         const url = config.apiUrl + "/register";
 
@@ -157,7 +152,7 @@
                 />
             </div>
 
-            <p>
+            <p class="message">
                 {message}
             </p>
 
@@ -223,6 +218,10 @@
 
     p:empty {
         display: none;
+    }
+
+    .message:not(:empty) {
+        color: var(--error-color);
     }
 
     #passwordStrength {

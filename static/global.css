@@ -30,7 +30,9 @@ body {
         --navbar-background-color: #75756a;
         --text-color: white;
         --submit-button-background-color: darkgreen;
+
         --link-color: #0c88f7;
+        --error-color: hsl(0, 71%, 65%);
 
         --background-color-transparent: hsla(0, 0%, 0%, 0.2);
 
@@ -48,7 +50,9 @@ body {
         --navbar-background-color: beige;
         --text-color: black;
         --submit-button-background-color: green;
+
         --link-color: #0000ee;
+        --error-color: crimson;
 
         --background-color-transparent: hsla(0, 0%, 0%, 0.1);
 

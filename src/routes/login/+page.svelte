@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import LoginInput from "../../components/loginInput.svelte";
     import SubmitButton from "../../components/submitButton.svelte";
+    import { requestOwnData } from "../../utils/requestOwnData";
 
     let isButtonDisabled = true;
     let passwordValue = "";
@@ -14,13 +15,7 @@
     $: buttonHint = isButtonDisabled ? "Please fill in all fields" : "Login"; // change button hint depending on whether the button is disabled or not
 
     async function login() {
-        const configResponse = await fetch("config.json", {
-            headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-            },
-        });
-        const config = await configResponse.json();
+        const config = await requestOwnData("config");
 
         const url = config.apiUrl + "/login";
         const body = {
