@@ -9,11 +9,23 @@
     let pageURL = $page.url.searchParams.get("page");
     let limitURL = $page.url.searchParams.get("limit");
 
-    let pageURLisValid = pageURL ? !isNaN(parseInt(pageURL)) : false;
-    let limitURLisValid = limitURL ? !isNaN(parseInt(limitURL)) : false;
+    let urlParamIsValid: { [key: string]: boolean } = {};
+    for (const [key, value] of $page.url.searchParams) {
+        switch (key) {
+            case "page":
+            case "limit":
+                let validations = [(v: string) => !isNaN(parseInt(v)), (v: string) => parseInt(v) > 0];
+                urlParamIsValid[key] = validations.every((v) => v(value));
+                break;
 
-    let currentPage = pageURLisValid ? parseInt(pageURL as string) : 1;
-    let limit = limitURLisValid ? parseInt(limitURL as string) : 10;
+            default:
+                $page.url.searchParams.delete(key);
+                break;
+        }
+    }
+
+    let currentPage = urlParamIsValid.page ? parseInt(pageURL as string) : 1;
+    let limit = urlParamIsValid.limit ? parseInt(limitURL as string) : 10;
     let pageCount: number;
     let pageInputValue = 1;
 
@@ -41,6 +53,7 @@
     };
 
     function addURLParams(params: { [key: string]: string | number | boolean | null }) {
+        window.history.replaceState({}, "", $page.url);
         const newUrl = new URL(window.location.href);
 
         for (const [key, value] of Object.entries(params)) {
@@ -123,6 +136,8 @@
 
         requestsGeoJSON = createGeoJSON();
     });
+
+    $: console.log(urlParamIsValid);
 </script>
 
 <main>
