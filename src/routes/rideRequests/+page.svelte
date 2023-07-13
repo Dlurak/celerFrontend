@@ -9,8 +9,11 @@
     let pageURL = $page.url.searchParams.get("page");
     let limitURL = $page.url.searchParams.get("limit");
 
-    let currentPage = pageURL ? parseInt(pageURL) : 1;
-    let limit = limitURL ? parseInt(limitURL) : 10;
+    let pageURLisValid = pageURL ? !isNaN(parseInt(pageURL)) : false;
+    let limitURLisValid = limitURL ? !isNaN(parseInt(limitURL)) : false;
+
+    let currentPage = pageURLisValid ? parseInt(pageURL as string) : 1;
+    let limit = limitURLisValid ? parseInt(limitURL as string) : 10;
     let pageCount: number;
     let pageInputValue = 1;
 
