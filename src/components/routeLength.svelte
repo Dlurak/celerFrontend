@@ -4,8 +4,6 @@
 
     export let startLocation: [number, number];
     export let destinationLocation: [number, number];
-
-    console.log(startLocation, destinationLocation);
 </script>
 
 {#await getRouteLength(startLocation, destinationLocation)}

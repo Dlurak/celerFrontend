@@ -4,9 +4,13 @@
     import Map from "../../components/Map.svelte";
     import RideRequestListItem from "./RideRequestListItem.svelte";
     import { requestOwnData } from "../../utils/requestOwnData";
+    import { page } from "$app/stores";
 
-    let page = 1;
-    let limit = 2;
+    let pageURL = $page.url.searchParams.get("page");
+    let limitURL = $page.url.searchParams.get("limit");
+
+    let currentPage = pageURL ? parseInt(pageURL) : 1;
+    let limit = limitURL ? parseInt(limitURL) : 10;
     let pageCount: number;
     let pageInputValue = 1;
 
@@ -21,16 +25,34 @@
     let config: Promise<any>;
 
     const handelPageChangeClick = async (newCount: number) => {
-        page = newCount;
+        currentPage = newCount;
         pageInputValue = newCount;
         rideRequestsResponse = requestPage(await config, token);
+        addURLParams({
+            page: currentPage,
+            limit: limit,
+        });
         requests = (await rideRequestsResponse).data;
         pageCount = (await rideRequestsResponse).pageCount;
         requestsGeoJSON = createGeoJSON();
     };
 
+    function addURLParams(params: { [key: string]: string | number | boolean | null }) {
+        const newUrl = new URL(window.location.href);
+
+        for (const [key, value] of Object.entries(params)) {
+            if (value === null) {
+                newUrl.searchParams.set(key, "");
+            } else {
+                newUrl.searchParams.set(key, value.toString());
+            }
+        }
+
+        window.history.replaceState({}, "", newUrl.toString());
+    }
+
     async function requestPage(config: any, token: string) {
-        const url = config.apiUrl + `/rideRequest?page=${page}&pageSize=${limit}`;
+        const url = config.apiUrl + `/rideRequest?page=${currentPage}&pageSize=${limit}`;
 
         const rideRequestsResponse = fetch(url, {
             method: "GET",
@@ -79,6 +101,11 @@
     onMount(async () => {
         document.title = "Celer - Ride Requests";
 
+        addURLParams({
+            page: currentPage,
+            limit: limit,
+        });
+
         token = localStorage.getItem("token") as string;
         if (!token) {
             window.location.href = "/login";
@@ -88,7 +115,7 @@
 
         rideRequestsResponse = requestPage(await config, token);
 
-        requests = (await rideRequestsResponse).data; // TODO: add error handling // TODO: add use promise.all
+        requests = (await rideRequestsResponse).data;
         pageCount = (await rideRequestsResponse).pageCount;
 
         requestsGeoJSON = createGeoJSON();
@@ -129,11 +156,11 @@
                                 if (pageInputValue <= 0 || pageInputValue > pageCount || [NaN, null].includes(pageInputValue)) {
                                     return;
                                 }
-                                page = pageInputValue;
-                                handelPageChangeClick(page);
+                                currentPage = pageInputValue;
+                                handelPageChangeClick(currentPage);
                             }}
                             on:blur={() => {
-                                handelPageChangeClick(page);
+                                handelPageChangeClick(currentPage);
                             }}
                         />
                         <div class="range">
@@ -141,10 +168,10 @@
                                 type="range"
                                 min="1"
                                 max={pageCount}
-                                bind:value={page}
+                                bind:value={currentPage}
                                 on:input={() => {
-                                    pageInputValue = page;
-                                    handelPageChangeClick(page);
+                                    pageInputValue = currentPage;
+                                    handelPageChangeClick(currentPage);
                                 }}
                             />
                         </div>
@@ -154,18 +181,18 @@
                         <button
                             title="Previous page"
                             on:click={() => {
-                                handelPageChangeClick(page - 1);
+                                handelPageChangeClick(currentPage - 1);
                             }}
                             class="bx bx-chevron-left"
-                            disabled={page <= 1}
+                            disabled={currentPage <= 1}
                         />
                         <button
                             title="Nextpage"
                             on:click={() => {
-                                handelPageChangeClick(page + 1);
+                                handelPageChangeClick(currentPage + 1);
                             }}
                             class="bx bx-chevron-right"
-                            disabled={page >= pageCount}
+                            disabled={currentPage >= pageCount}
                         />
                         <button
                             title="First page"
@@ -173,7 +200,7 @@
                                 handelPageChangeClick(1);
                             }}
                             class="bx bx-chevrons-left"
-                            disabled={page <= 1}
+                            disabled={currentPage <= 1}
                         />
                         <button
                             title="Last page"
@@ -181,7 +208,7 @@
                                 handelPageChangeClick(pageCount);
                             }}
                             class="bx bx-chevrons-right"
-                            disabled={page >= pageCount}
+                            disabled={currentPage >= pageCount}
                         />
                     </span>
                 </div>
