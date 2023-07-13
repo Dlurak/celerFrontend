@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import type { geoJSONrideRequests } from "../../types/geoJSON";
     import Map from "../../components/Map.svelte";
-    import RideRequestListItem from "../../components/RideRequestListItem.svelte";
+    import RideRequestListItem from "./RideRequestListItem.svelte";
     import { requestOwnData } from "../../utils/requestOwnData";
 
     let page = 1;

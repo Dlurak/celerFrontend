@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { formatSeconds } from "../utils/formatTimeFromStamp";
-    import { requestOwnData } from "../utils/requestOwnData";
-    import type { groupsType } from "../types/groupsType";
-    import AddressLabel from "./addressLabel.svelte";
-    import RouteLength from "./routeLength.svelte";
-    import { reverseArray } from "../utils/reverseArray";
+    import { formatSeconds } from "../../utils/formatTimeFromStamp";
+
+    import { requestOwnData } from "../../utils/requestOwnData";
+    import type { groupsType } from "../../types/groupsType";
+    import AddressLabel from "../../components/addressLabel.svelte";
+    import RouteLength from "../../components/routeLength.svelte";
 
     /**** Component Parameters ****/
 
