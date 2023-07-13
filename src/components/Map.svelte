@@ -30,10 +30,18 @@
                 map.locate({ setView: true, maxZoom: 16 });
             }
 
-            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            const cartoLayer = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            }).addTo(map);
+            });
+
+            const darkmodeLayer = L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+                maxZoom: 20,
+                attribution:
+                    '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+            });
+
+            darkmodeLayer.addTo(map);
 
             map.on("moveend", () => {
                 localStorage.setItem(
@@ -44,6 +52,17 @@
                         zoom: map.getZoom(),
                     })
                 );
+            });
+
+            const darkModePref = window.matchMedia("(prefers-color-scheme: dark)");
+            darkModePref.addEventListener("change", (e) => {
+                if (e.matches) {
+                    cartoLayer.remove();
+                    darkmodeLayer.addTo(map);
+                } else {
+                    darkmodeLayer.remove();
+                    cartoLayer.addTo(map);
+                }
             });
         }
     });
