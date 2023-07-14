@@ -136,8 +136,6 @@
 
         requestsGeoJSON = createGeoJSON();
     });
-
-    $: console.log(urlParamIsValid);
 </script>
 
 <main>

@@ -10,7 +10,7 @@
     <Loader />
 {:then data}
     {#if data}
-        <p>{data} km</p>
+        <p title={`Exactly ${data} km`}>{Math.floor(data)} km</p>
     {:else}
         <p>no route found</p>
     {/if}
@@ -26,5 +26,7 @@
         overflow: hidden;
 
         margin-block: 0;
+
+        text-transform: capitalize;
     }
 </style>

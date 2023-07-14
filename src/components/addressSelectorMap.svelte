@@ -1,13 +1,16 @@
 <script lang="ts">
-    import { afterUpdate, onMount } from "svelte";
+    import { onMount } from "svelte";
     import { browser } from "$app/environment";
-    import type { geoJSONrideRequests } from "../types/geoJSON";
+
+    export let lngStart: number = 0;
+    export let latStart: number = 0;
+
+    export let lngDest: number = 0;
+    export let latDest: number = 0;
+
+    export let mapId: string = "map";
 
     let map: L.Map;
-
-    export let data: geoJSONrideRequests;
-
-    let layeroObj: { [key: string]: L.Layer } = {};
 
     onMount(() => {
         // basic leaflet setup
@@ -22,7 +25,44 @@
 
             const mapStart: MapStart = JSON.parse(localStorage.getItem("mapStart") || "{}");
 
-            map = L.map("map");
+            map = L.map(mapId);
+
+            const markers: {
+                [key: string]: L.Marker;
+            } = {
+                start: L.marker([latStart, lngStart], {
+                    draggable: true,
+                    icon: L.icon({
+                        iconUrl: "/assets/icons/marker_blue.png",
+                        iconSize: [25, 41],
+                        iconAnchor: [13, 21],
+                    }),
+                    title: "Start",
+                }),
+                dest: L.marker([latDest, lngDest], {
+                    draggable: true,
+                    icon: L.icon({
+                        iconUrl: "/assets/icons/marker_red.png",
+                        iconSize: [25, 41],
+                        iconAnchor: [13, 21],
+                    }),
+                    title: "Destination",
+                }),
+            };
+
+            Object.entries(markers).forEach(([key, marker]) => {
+                marker.addTo(map);
+                marker.on("dragend", (e) => {
+                    const latlng = e.target.getLatLng();
+                    if (key === "start") {
+                        latStart = latlng.lat;
+                        lngStart = latlng.lng;
+                    } else if (key === "dest") {
+                        latDest = latlng.lat;
+                        lngDest = latlng.lng;
+                    }
+                });
+            });
 
             if (Object.keys(mapStart).length > 0) {
                 map.setView([mapStart.lat, mapStart.lng], mapStart.zoom);
@@ -73,20 +113,6 @@
             });
         }
     });
-
-    afterUpdate(() => {
-        let L = window.L;
-
-        // check if layerObj has a geoJSON layer/key
-        if (layeroObj.geoJSON) {
-            layeroObj.geoJSON.remove();
-        }
-
-        const geoJSON = L.geoJSON(data);
-        geoJSON.addTo(map);
-
-        layeroObj.geoJSON = geoJSON;
-    });
 </script>
 
 <svelte:head>
@@ -94,7 +120,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </svelte:head>
 
-<div id="map" />
+<div id={mapId} />
 
 <link
     rel="stylesheet"
@@ -104,7 +130,7 @@
 />
 
 <style>
-    #map {
+    div {
         height: 100%;
         width: 100%;
 
