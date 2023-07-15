@@ -34,7 +34,6 @@
                     draggable: true,
                     icon: L.icon({
                         iconUrl: "/assets/icons/marker_blue.png",
-                        iconSize: [25, 41],
                         iconAnchor: [13, 21],
                     }),
                     title: "Start",
@@ -43,7 +42,6 @@
                     draggable: true,
                     icon: L.icon({
                         iconUrl: "/assets/icons/marker_red.png",
-                        iconSize: [25, 41],
                         iconAnchor: [13, 21],
                     }),
                     title: "Destination",
